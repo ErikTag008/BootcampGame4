@@ -1,3 +1,4 @@
+using DG.Tweening;
 using Gilzoide.UpdateManager;
 using KBCore.Refs;
 using UnityEngine;
@@ -7,21 +8,29 @@ namespace Project.Assets._Project._Scripts.Interactables
     [RequireComponent(typeof(Rigidbody))]
     public class Block : ValidatedManagedBehaviour, IDragable, IFixedUpdatable
     {
+        [SerializeField] private UnitColor _color;
         [SerializeField, Self] private Rigidbody _rb;
         [SerializeField, Self] private Collider[] _colliders;
         [SerializeField, Child] private MeshRenderer[] _renderers;
         [SerializeField] private RenderingLayerMask _noOutlineLayer;
         [SerializeField] private RenderingLayerMask _outlinedLayer;
         [SerializeField] private float _moveSpeed = 10f;
+        [SerializeField] private float _posLockInDuration = 0.1f;
+        [SerializeField] private Ease _posLockInEase = Ease.OutCubic;
+
+
         private Bounds _bounds;
         private Vector3? _offset;
         private Vector3? _targetPosition;
         private bool _isGettingDragged = false;
+        private Tween _posLockInTween;
+
 
         private void Awake()
         {
             UpdateBounds();
             ToggleOutLine(false);
+            _rb.isKinematic = true;
         }
         public void ManagedFixedUpdate()
         {
@@ -64,7 +73,10 @@ namespace Project.Assets._Project._Scripts.Interactables
             offset.y = 0f;
             _offset = offset;
             _isGettingDragged = true;
+            _posLockInTween?.Complete();
+            _posLockInTween?.Kill();
             ToggleOutLine(true);
+            _rb.isKinematic = false;
             UpdateBounds();
         }
 
@@ -72,10 +84,13 @@ namespace Project.Assets._Project._Scripts.Interactables
         {
             UpdateBounds();
             ToggleOutLine(false);
-
+            _rb.isKinematic = true;
             _rb.linearVelocity = Vector3.zero;
             finalPos.y = 0f;
-            transform.position = finalPos;
+            _posLockInTween?.Complete();
+            _posLockInTween?.Kill();
+            _posLockInTween = transform.DOMove(finalPos, _posLockInDuration)
+                .SetEase(_posLockInEase);
             _isGettingDragged = false;
             _targetPosition = null;
             _offset = null;
@@ -100,4 +115,14 @@ namespace Project.Assets._Project._Scripts.Interactables
         
 #endif
     }
+}
+
+public enum UnitColor
+{
+    Red,
+    Yellow,
+    Blue,
+    Orange,
+    Purple,
+    Green
 }

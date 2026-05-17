@@ -30,8 +30,8 @@ namespace Project.Assets._Project._Scripts.DI
         [SerializeField, Scene] private CoreUIElements _coreUIElements;
         [SerializeField, Scene] private GameUIElements _gameUIElements;
         [SerializeField, Scene] private List<Button> _allButtons;
-        //[Header("Game Objects")]
-        //[SerializeField, Scene] private List<MovableBlock> _movableBlocks;
+        [Header("Game Objects")]
+        [SerializeField, Scene] private List<Block> _blocks;
         
         
         
@@ -53,7 +53,7 @@ namespace Project.Assets._Project._Scripts.DI
             builder.AddSingleton(_gameUIElements);
             builder.AddSingleton(_allButtons);
             builder.AddSingleton(_levelManager);
-            //builder.AddSingleton(_movableBlocks);
+            builder.AddSingleton(_blocks);
             
             
         }
