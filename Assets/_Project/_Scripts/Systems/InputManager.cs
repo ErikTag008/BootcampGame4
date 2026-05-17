@@ -1,5 +1,6 @@
 using DG.Tweening;
 using Gilzoide.UpdateManager;
+using Project.Assets._Project._Scripts.GridComponents;
 using Project.Assets._Project._Scripts.Interactables;
 using Reflex.Attributes;
 using System.Collections.Generic;
@@ -15,35 +16,31 @@ namespace Project.Assets._Project._Scripts.Systems
         [Inject] private readonly Camera _camera; 
         [Inject] private readonly CinemachineCamera _virtualCamera;
         [Inject] private readonly CinemachineBasicMultiChannelPerlin _virtualCameraShake;
+        [Inject] private readonly GridGenerator _gridGen;
         [Header("Interaction")]
         [SerializeField] private LayerMask _interactableLayer;
+        [SerializeField] private LayerMask _tileLayer;
         private bool _canInteract = true;
         [Header("Camera Target")]
         [SerializeField] private Transform _cameraTarget;
-        [SerializeField] private float _cameraMovementSensitivity = 2f;
-        [SerializeField] private Vector2 _cameraMovementMaxPosition = new Vector2(50f, 50f);
         [Header("Camera Zoom")]
-        [SerializeField] private float _zoomSpeed = 0.01f;
-        [SerializeField] private float _minZoom = 5f;
-        [SerializeField] private float _maxZoom = 20f;
+        [SerializeField] private float _startingCameraZoomFovOffset = 10f;
         [SerializeField] private Ease _startingCameraZoomEase = Ease.OutCubic;
         private bool _isDragging = false;
-        private bool _canMoveCamera = true;
-
         private Tween _cameraShakeTween;
+        private IDragable _currentDraggedBlock;
         private void Start()
         {
-            _inputReader.OnTouch += HandleTouch;
             _inputReader.OnDragStart += HandleDragStart;
             _inputReader.OnDragEnd += HandleDragEnd;
-            _inputReader.OnZoom += HandleZoom;
             _virtualCamera.Target.TrackingTarget = _cameraTarget;
         }
 
         public Tween StartingCameraZoomEffect(float duration)
         {
-            _virtualCamera.Lens.OrthographicSize = _maxZoom;
-            return DOVirtual.Float(_maxZoom, EUtils.Math.GetAverage(_maxZoom, _minZoom), duration,o => _virtualCamera.Lens.OrthographicSize = o)
+            float fov = _virtualCamera.Lens.FieldOfView;
+            _virtualCamera.Lens.FieldOfView += _startingCameraZoomFovOffset;
+            return DOVirtual.Float(_virtualCamera.Lens.FieldOfView, fov, duration,o => _virtualCamera.Lens.FieldOfView = o)
                 .SetEase(_startingCameraZoomEase);
         }
 
@@ -58,28 +55,10 @@ namespace Project.Assets._Project._Scripts.Systems
         }
         private void OnDestroy()
         {
-            _inputReader.OnTouch -= HandleTouch;
             _inputReader.OnDragStart -= HandleDragStart;
             _inputReader.OnDragEnd -= HandleDragEnd;
-            _inputReader.OnZoom -= HandleZoom;
         }
 
-        private void HandleZoom(float pinchDelta)
-        {
-            float newSize = _virtualCamera.Lens.OrthographicSize - pinchDelta * _zoomSpeed;
-            var size = Mathf.Clamp(newSize, _minZoom, _maxZoom);
-
-            _virtualCamera.Lens.OrthographicSize = size;
-        }
-
-        public void SetCameraTargetPositionTo(Vector3 targetPos, float canMoveCameraAgainDelay = 1f)
-        {
-            _canMoveCamera = false;
-            _cameraTarget.position = new Vector3(Mathf.Clamp(targetPos.x, -_cameraMovementMaxPosition.x, _cameraMovementMaxPosition.x), 0f,
-                                                        Mathf.Clamp(targetPos.z, -_cameraMovementMaxPosition.y, _cameraMovementMaxPosition.y));
-            DOVirtual.DelayedCall(canMoveCameraAgainDelay,() => _canMoveCamera = true);
-
-        }
 
         public void ToggleCanInteract(bool canInteract)
         {
@@ -88,28 +67,50 @@ namespace Project.Assets._Project._Scripts.Systems
 
         public void ManagedUpdate()
         {
-            if (!_canInteract)
+            if (!_canInteract) return;
+            if (_isDragging && _currentDraggedBlock != null)
             {
-                return;
-            }
-            if (_isDragging && _canMoveCamera)
-            {
-                var drag = _inputReader.SetDragDelta();
-                var targetPos = _cameraTarget.position - _cameraMovementSensitivity * Time.deltaTime * new Vector3(drag.x, 0f, drag.y);
-                _cameraTarget.position = new Vector3(Mathf.Clamp(targetPos.x, -_cameraMovementMaxPosition.x, _cameraMovementMaxPosition.x), 0f,
-                                                        Mathf.Clamp(targetPos.z, -_cameraMovementMaxPosition.y, _cameraMovementMaxPosition.y));
+                Ray ray = _camera.ScreenPointToRay(_inputReader.DragPosition);
+                Plane groundPlane = new Plane(Vector3.up, Vector3.zero);
+
+                if (groundPlane.Raycast(ray, out float distance))
+                {
+                    Vector3 position = ray.GetPoint(distance);
+                    _currentDraggedBlock?.UpdateDrag(position);
+                }
             }
         }
         private void HandleDragStart(Vector2 screenPos)
         {
-            if (!_canInteract) return;
-            _isDragging = true;
+            if (IsPointerOverUI(_inputReader.DragPosition) || !_canInteract) return;
+            var touchRay = _camera.ScreenPointToRay(_inputReader.DragPosition);
+            if (Physics.Raycast(touchRay, out var hit, _interactableLayer) && hit.collider != null && hit.collider.TryGetComponent<IDragable>(out var dragable))
+            {
+
+                _currentDraggedBlock = dragable;
+                print($"Current Dragable: {_currentDraggedBlock}");
+                var point = hit.point;
+                var blockTransform = (_currentDraggedBlock as Component).transform;
+                var offset = blockTransform.position - point;
+
+                _currentDraggedBlock?.StartDrag(offset);
+                _isDragging = true;
+            }
         }
         private void HandleDragEnd(Vector2 screenPos)
         {
-            if (!_canInteract) return;
+            if (!_canInteract && !_isDragging) return;
+            var block = _currentDraggedBlock as Component;
+            Vector3 pos = block.transform.position;
+            if(Physics.Raycast(block.transform.position, Vector3.down, out var hitInfo, 3f, _tileLayer) && hitInfo.transform != null)
+            {
+                pos = hitInfo.transform.position;
+            }
+            _currentDraggedBlock?.EndDrag(pos);
             _isDragging = false;
         }
+
+        
 
         private bool IsPointerOverUI(Vector2 position)
         {
@@ -124,22 +125,6 @@ namespace Project.Assets._Project._Scripts.Systems
             return results.Count > 0;
         }
 
-        private void HandleTouch()
-        {
-            if (IsPointerOverUI(_inputReader.TouchPosition) || !_canInteract) return;
-            var touchRay = _camera.ScreenPointToRay(_inputReader.TouchPosition);
-            if (Physics.Raycast(touchRay, out var hit, _interactableLayer) && hit.collider != null && hit.collider.TryGetComponent<IInteractable>(out var interactable))
-            {
-                interactable.Interact();
-            }
-        }
-
-#if UNITY_EDITOR
-        private void OnDrawGizmos()
-        {
-            Gizmos.color = Color.green;
-            Gizmos.DrawCube(Vector3.zero + Vector3.down, 2 * new Vector3(_cameraMovementMaxPosition.x, 0.1f, _cameraMovementMaxPosition.y));
-        }
-#endif
+        
     }
 }

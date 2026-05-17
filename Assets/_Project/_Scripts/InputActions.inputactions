@@ -7,45 +7,25 @@
             "id": "9bb8a86d-6789-4223-bc41-a023a1150558",
             "actions": [
                 {
-                    "name": "Touch",
-                    "type": "Button",
-                    "id": "8fd875b8-edbf-485e-944e-983b0490cf53",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "Tap(duration=0.15)",
-                    "initialStateCheck": true
-                },
-                {
                     "name": "Drag",
                     "type": "Button",
                     "id": "6d8d5c0c-44d2-4e61-9e88-791959fbc0f4",
                     "expectedControlType": "",
                     "processors": "",
-                    "interactions": "Hold(duration=0.02)",
+                    "interactions": "",
                     "initialStateCheck": true
                 },
                 {
-                    "name": "SecondaryTouchContact",
-                    "type": "Button",
-                    "id": "bd045504-fb1f-4b8f-b69e-dccbe7a26c26",
-                    "expectedControlType": "",
+                    "name": "DragPosition",
+                    "type": "Value",
+                    "id": "fba8ff36-fcfc-49bb-a288-0c2fac39dbc8",
+                    "expectedControlType": "Vector2",
                     "processors": "",
                     "interactions": "",
-                    "initialStateCheck": false
+                    "initialStateCheck": true
                 }
             ],
             "bindings": [
-                {
-                    "name": "",
-                    "id": "7e19f281-d406-4e3b-a4f0-8f5baf653fe6",
-                    "path": "<Pointer>/press",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": ";Touchscreen;Keyboard&Mouse",
-                    "action": "Touch",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
                 {
                     "name": "",
                     "id": "a710edb9-3a46-4749-9197-92fe76fa7309",
@@ -59,12 +39,12 @@
                 },
                 {
                     "name": "",
-                    "id": "6c888a5e-dde7-49a4-8192-fa68daa5f07c",
-                    "path": "<Touchscreen>/touch1/press",
+                    "id": "ad73c634-38c0-4740-acbb-83baf933b1bc",
+                    "path": "<Pointer>/position",
                     "interactions": "",
                     "processors": "",
-                    "groups": ";Touchscreen",
-                    "action": "SecondaryTouchContact",
+                    "groups": ";Keyboard&Mouse;Touchscreen",
+                    "action": "DragPosition",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

@@ -1,4 +1,5 @@
 using KBCore.Refs;
+using Project.Assets._Project._Scripts.GridComponents;
 using Project.Assets._Project._Scripts.Interactables;
 using Project.Assets._Project._Scripts.Systems;
 using Project.Assets._Project._Scripts.UI;
@@ -20,6 +21,7 @@ namespace Project.Assets._Project._Scripts.DI
         [SerializeField, Scene] private LevelManager _levelManager;
         [SerializeField, Scene] private HintManager _hintManager;
         [SerializeField, Scene] private AudioManager _audioManager;
+        [SerializeField, Scene] private GridGenerator _gridGenerator;
         [Header("Camera")]
         [SerializeField, Scene] private Camera _camera;
         [SerializeField, Scene] private CinemachineCamera _cinemachineCam;
@@ -45,6 +47,7 @@ namespace Project.Assets._Project._Scripts.DI
             builder.AddSingleton(_levelManager);
             builder.AddSingleton(_hintManager);
             builder.AddSingleton(_uiManager);
+            builder.AddSingleton(_gridGenerator);
             builder.AddSingleton(_audioManager, typeof(IAudioService));
             builder.AddSingleton(_coreUIElements);
             builder.AddSingleton(_gameUIElements);
