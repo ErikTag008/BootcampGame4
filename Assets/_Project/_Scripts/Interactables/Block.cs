@@ -15,6 +15,7 @@ namespace Project.Assets._Project._Scripts.Interactables
         [SerializeField] private RenderingLayerMask _noOutlineLayer;
         [SerializeField] private RenderingLayerMask _outlinedLayer;
         [SerializeField] private float _moveSpeed = 10f;
+        [SerializeField] private float _maxSpeed = 20f;
         [SerializeField] private float _posLockInDuration = 0.1f;
         [SerializeField] private Ease _posLockInEase = Ease.OutCubic;
 
@@ -31,6 +32,8 @@ namespace Project.Assets._Project._Scripts.Interactables
             UpdateBounds();
             ToggleOutLine(false);
             _rb.isKinematic = true;
+            //_rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
+            //_rb.interpolation = RigidbodyInterpolation.Interpolate;
         }
         public void ManagedFixedUpdate()
         {
@@ -49,12 +52,27 @@ namespace Project.Assets._Project._Scripts.Interactables
 
         private void GoTowardsTargetPosition()
         {
-            if (_targetPosition == null || !_isGettingDragged) return;
-            print($"Going towards {_targetPosition}");
-            var vector = _targetPosition - transform.position + _offset;
-            if (vector == null) return;
-            _rb.linearVelocity = (Vector3)(vector * _moveSpeed);
-            //transform.position = (Vector3)(_targetPosition + _offset);
+            if (_targetPosition == null || _offset == null || !_isGettingDragged) return;
+
+            Vector3 desiredPosition = _targetPosition.Value + _offset.Value;
+            Vector3 currentPosition = _rb.position;
+            Vector3 difference = desiredPosition - currentPosition;
+
+            float distance = difference.magnitude;
+
+            if (distance < 0.02f)
+            {
+                _rb.linearVelocity = Vector3.zero;
+                return;
+            }
+            Vector3 targetVelocity = difference * _moveSpeed;
+
+            if (targetVelocity.magnitude > _maxSpeed)
+            {
+                targetVelocity = targetVelocity.normalized * _maxSpeed;
+            }
+
+            _rb.linearVelocity = targetVelocity;
             UpdateBounds();
         }
 
