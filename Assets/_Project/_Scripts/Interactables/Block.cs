@@ -1,6 +1,8 @@
 using DG.Tweening;
 using Gilzoide.UpdateManager;
 using KBCore.Refs;
+using Project.Assets._Project._Scripts.GridComponents;
+using System;
 using UnityEngine;
 
 namespace Project.Assets._Project._Scripts.Interactables
@@ -14,10 +16,17 @@ namespace Project.Assets._Project._Scripts.Interactables
         [SerializeField, Child] private MeshRenderer[] _renderers;
         [SerializeField] private RenderingLayerMask _noOutlineLayer;
         [SerializeField] private RenderingLayerMask _outlinedLayer;
+        [SerializeField] private LayerMask _tileLayer;
         [SerializeField] private float _moveSpeed = 10f;
         [SerializeField] private float _maxSpeed = 20f;
         [SerializeField] private float _posLockInDuration = 0.1f;
         [SerializeField] private Ease _posLockInEase = Ease.OutCubic;
+        [SerializeField] private float _exitDuration = 0.3f;
+        [SerializeField] private float _exitDistance = 2.0f;
+        [SerializeField] private Ease _exitEase = Ease.InOutCubic;
+        private bool _canExit = true;
+        private bool _hasExited = false;
+        public event Action OnExit;
 
 
         private Bounds _bounds;
@@ -32,22 +41,51 @@ namespace Project.Assets._Project._Scripts.Interactables
             UpdateBounds();
             ToggleOutLine(false);
             _rb.isKinematic = true;
-            //_rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
-            //_rb.interpolation = RigidbodyInterpolation.Interpolate;
         }
         public void ManagedFixedUpdate()
         {
-            print($"_currentTagetPos: {_targetPosition}");
-            print($"_offset: {_offset}");
             GoTowardsTargetPosition();
         }
 
         private void OnCollisionEnter(Collision collision)
         {
-            if (collision.collider.CompareTag("Exit"))
+            CheckExitCollision(collision);
+        }
+
+        private void OnCollisionStay(Collision collision)
+        {
+            CheckExitCollision(collision);
+        }
+
+        private void CheckExitCollision(Collision collision)
+        {
+            if (collision.collider.CompareTag("Exit") && collision.collider.TryGetComponent(out ExitPoint exitPoint))
             {
-                
+                if (_canExit && exitPoint.CanExit(_bounds, _color))
+                {
+                    OnExit?.Invoke();
+
+                    ExitThrough(exitPoint.Direction);
+                    _hasExited = true;
+                    _canExit = false;
+                }
             }
+        }
+
+        private void ExitThrough(ExitDirection direction)
+        {
+            var tilePos = GetCurrentTilePos();
+            transform.position = tilePos;
+            var directionVector = direction switch
+            {
+                ExitDirection.Up => Vector3.forward,
+                ExitDirection.Down => Vector3.back,
+                ExitDirection.Left => Vector3.left,
+                ExitDirection.Right => Vector3.right,
+                _ => Vector3.zero
+            };
+            transform.DOMove(transform.position + directionVector * _exitDistance, _exitDuration)
+                .SetEase(_exitEase);
         }
 
         private void ToggleOutLine(bool isOn)
@@ -60,7 +98,7 @@ namespace Project.Assets._Project._Scripts.Interactables
 
         private void GoTowardsTargetPosition()
         {
-            if (_targetPosition == null || _offset == null || !_isGettingDragged) return;
+            if (_targetPosition == null || _offset == null || !_isGettingDragged || _hasExited) return;
 
             Vector3 desiredPosition = _targetPosition.Value + _offset.Value;
             Vector3 currentPosition = _rb.position;
@@ -96,6 +134,7 @@ namespace Project.Assets._Project._Scripts.Interactables
 
         public void StartDrag(Vector3 offset)
         {
+            if (_hasExited) return;
             offset.y = 0f;
             _offset = offset;
             _isGettingDragged = true;
@@ -106,15 +145,17 @@ namespace Project.Assets._Project._Scripts.Interactables
             UpdateBounds();
         }
 
-        public void EndDrag(Vector3 finalPos)
+        public void EndDrag()
         {
+            if (_hasExited) return;
+
             UpdateBounds();
             ToggleOutLine(false);
-            _rb.isKinematic = true;
             _rb.linearVelocity = Vector3.zero;
-            finalPos.y = 0f;
+            _rb.isKinematic = true;
             _posLockInTween?.Complete();
             _posLockInTween?.Kill();
+            Vector3 finalPos = GetCurrentTilePos();
             _posLockInTween = transform.DOMove(finalPos, _posLockInDuration)
                 .SetEase(_posLockInEase);
             _isGettingDragged = false;
@@ -122,10 +163,21 @@ namespace Project.Assets._Project._Scripts.Interactables
             _offset = null;
         }
 
-        
+        private Vector3 GetCurrentTilePos()
+        {
+            Vector3 finalPos = transform.position;
+            if (Physics.Raycast(transform.position, Vector3.down, out var hitInfo, 3f, _tileLayer) && hitInfo.transform != null)
+            {
+                finalPos = hitInfo.transform.position;
+            }
+            finalPos.y = 0f;
+            return finalPos;
+        }
 
         public void UpdateDrag(Vector3 target)
         {
+            if (_hasExited) return;
+
             target.y = transform.position.y;
             _targetPosition = target;
         }

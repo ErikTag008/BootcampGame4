@@ -7,7 +7,7 @@ namespace Project.Assets._Project._Scripts.Systems
     public class InputReader : MonoBehaviour
     {
         public event Action<Vector2> OnDragStart;
-        public event Action<Vector2> OnDragEnd;
+        public event Action OnDragEnd;
         public Vector2 DragPosition
         {
             get
@@ -54,7 +54,7 @@ namespace Project.Assets._Project._Scripts.Systems
             }
             else if (context.canceled)
             {
-                OnDragEnd?.Invoke(DragPosition);
+                OnDragEnd?.Invoke();
                 print("Drag End!");
 
             }

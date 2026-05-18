@@ -88,25 +88,24 @@ namespace Project.Assets._Project._Scripts.Systems
             {
 
                 _currentDraggedBlock = dragable;
+                if (_currentDraggedBlock == null) return;
                 print($"Current Dragable: {_currentDraggedBlock}");
                 var point = hit.point;
                 var blockTransform = (_currentDraggedBlock as Component).transform;
                 var offset = blockTransform.position - point;
 
-                _currentDraggedBlock?.StartDrag(offset);
+                _currentDraggedBlock.StartDrag(offset);
+
                 _isDragging = true;
+                _currentDraggedBlock.OnExit += HandleDragEnd;
             }
         }
-        private void HandleDragEnd(Vector2 screenPos)
+        private void HandleDragEnd()
         {
             if (!_canInteract && !_isDragging) return;
-            var block = _currentDraggedBlock as Component;
-            Vector3 pos = block.transform.position;
-            if(Physics.Raycast(block.transform.position, Vector3.down, out var hitInfo, 3f, _tileLayer) && hitInfo.transform != null)
-            {
-                pos = hitInfo.transform.position;
-            }
-            _currentDraggedBlock?.EndDrag(pos);
+            if(_currentDraggedBlock == null) return;
+            _currentDraggedBlock.EndDrag();
+            _currentDraggedBlock.OnExit -= HandleDragEnd;
             _isDragging = false;
         }
 
