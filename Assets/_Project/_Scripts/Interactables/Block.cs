@@ -64,27 +64,18 @@ namespace Project.Assets._Project._Scripts.Interactables
                 if (_canExit && exitPoint.CanExit(_bounds, _color))
                 {
                     OnExit?.Invoke();
-
-                    ExitThrough(exitPoint.Direction);
+                    ExitThrough(exitPoint.GetExitVector());
                     _hasExited = true;
                     _canExit = false;
                 }
             }
         }
 
-        private void ExitThrough(ExitDirection direction)
+        private void ExitThrough(Vector3 direction)
         {
             var tilePos = GetCurrentTilePos();
             transform.position = tilePos;
-            var directionVector = direction switch
-            {
-                ExitDirection.Up => Vector3.forward,
-                ExitDirection.Down => Vector3.back,
-                ExitDirection.Left => Vector3.left,
-                ExitDirection.Right => Vector3.right,
-                _ => Vector3.zero
-            };
-            transform.DOMove(transform.position + directionVector * _exitDistance, _exitDuration)
+            transform.DOMove(transform.position + direction * _exitDistance, _exitDuration)
                 .SetEase(_exitEase);
         }
 

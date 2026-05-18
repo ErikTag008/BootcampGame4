@@ -328,6 +328,7 @@ MonoBehaviour:
   _posLockInEase: 9
   _exitDuration: 0.3
   _exitDistance: 5
+  _exitEase: 10
 --- !u!54 &5826299
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -6017,7 +6018,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: ProjectAssembly::Project.Assets._Project._Scripts.GridComponents.ExitPoint
   _direction: 3
   _useColorRestriction: 1
-  _requiredColor: 1
+  _requiredColor: 0
   _collider: {fileID: 965002403}
 --- !u!1 &975886839
 GameObject:
@@ -10793,6 +10794,7 @@ MonoBehaviour:
   _posLockInEase: 9
   _exitDuration: 0.3
   _exitDistance: 5
+  _exitEase: 10
 --- !u!54 &1793868035
 Rigidbody:
   m_ObjectHideFlags: 0
