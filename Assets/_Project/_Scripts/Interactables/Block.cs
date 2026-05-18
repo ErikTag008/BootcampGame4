@@ -42,6 +42,14 @@ namespace Project.Assets._Project._Scripts.Interactables
             GoTowardsTargetPosition();
         }
 
+        private void OnCollisionEnter(Collision collision)
+        {
+            if (collision.collider.CompareTag("Exit"))
+            {
+                
+            }
+        }
+
         private void ToggleOutLine(bool isOn)
         {
             foreach(var rend in _renderers)
