@@ -146,8 +146,11 @@ namespace Project.Assets._Project._Scripts.Interactables
 
             UpdateBounds();
             ToggleOutLine(false);
-            _rb.linearVelocity = Vector3.zero;
-            _rb.isKinematic = true;
+            if (!_rb.isKinematic)
+            {
+                _rb.linearVelocity = Vector3.zero;
+                _rb.isKinematic = true;
+            }
             _posLockInTween?.Complete();
             _posLockInTween?.Kill();
             Vector3 finalPos = GetCurrentTilePos();
