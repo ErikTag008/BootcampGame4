@@ -226,6 +226,7 @@ namespace Project.Assets._Project._Scripts.Systems
         private void WinLevel()
         {
             _hasWon = true;
+            _timerManager.StopTimer();
             _inputManager.ToggleCanInteract(false);
             _levelManager.UnlockNextLevel();
             _audioService.Play(_audioData.LevelWinClip, _audioData.LevelWinVolume);
