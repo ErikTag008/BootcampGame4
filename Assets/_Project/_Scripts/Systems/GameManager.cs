@@ -170,7 +170,6 @@ namespace Project.Assets._Project._Scripts.Systems
             _showingHintArrow = false;
             _audioService.Play(_audioData.CorrectInteractionClip, _audioData.CorrectInteractionVolume, UnityEngine.Random.Range(0.95f, 1.05f));
             if (_hasWon) return;
-            CheckForWin();
             if (_isTutorial && _remainingTutorialHintAmount > 0)
             {
                 TryGetHint();
@@ -179,6 +178,8 @@ namespace Project.Assets._Project._Scripts.Systems
             {
                 _uiManager.ToggleHintButton(true);
             }
+            CheckForWin();
+            
             
 
         }
