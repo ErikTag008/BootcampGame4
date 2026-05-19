@@ -16,12 +16,13 @@ namespace Project.Assets._Project._Scripts.Systems
         [Inject] private readonly LevelManager _levelManager;
         [Inject] private readonly HintManager _hintManager;
         [Inject] private readonly IAudioService _audioService;
+        [Inject] private readonly TimerManager _timerManager;
         [Inject] private readonly PlayerPrefsData _playerPrefsData;
         //[Inject] private readonly List<MovableBlock> _blocks;
         [Inject] private readonly List<Button> _allButtons;
         [Inject] private readonly Camera _camera;
         [Inject] private readonly AudioData _audioData;
-        [SerializeField] private int _startingNumberOfTries = 10;
+        [Inject] private readonly List<Block> _blocks;
 
         [Header("Camera Effects")]
         [SerializeField] private float _cameraShakeDuration = 0.3f;
@@ -35,57 +36,35 @@ namespace Project.Assets._Project._Scripts.Systems
 
 
         private int _remainingTutorialHintAmount;
-        private int _currentNumberOfTries;
         private bool _hasLost = false;
         private bool _hasWon = false;
         private bool _showingHintArrow = false;
         private Vector3 _lastHintPosition = Vector3.zero;
         private bool _soundTurnedOn = true;
 
-        
-        private void Awake()
-        {
-            
-        }
         private void Start()
         {
             DOVirtual.DelayedCall(0.5f, () => Application.targetFrameRate = 60);
-            _inputManager.ToggleCanInteract(false);
-            _uiManager.OnLevelReloadRequested += _levelManager.ReloadLevel;
-            _uiManager.OnContinueToNextLevelRequested += _levelManager.ContinueToNextLevel;
-            _uiManager.OnReturnToMenuRequested += _levelManager.ReturnToMenu;
-            _uiManager.OnHintRequested += TryGetHint;
-            _uiManager.OnPauseRequested += Pause;
-            _hintManager.OnCurrentHintAmountChanged += _uiManager.SetNumberOfHints;
-            //_blocks.ForEach(block => block.OnInteracted += OnInteracted);
-            _allButtons.ForEach(button => button.onClick.AddListener(() => _audioService.Play(_audioData.AnyButtonClip, _audioData.AnyButtonVolume)));
-            _remainingTutorialHintAmount = _tutorialHintAmount;
-            _currentNumberOfTries = _startingNumberOfTries;
-            _uiManager.SetNumberOfTries(_currentNumberOfTries);
+            SubscribeToEvents();
             CheckIfSoundNeedsToBeActive();
+            _inputManager.ToggleCanInteract(false);
             _uiManager.ToggleHintButton(false);
             _uiManager.TogglePauseButton(false);
-            DOTween.Sequence()
-                .Append(_levelManager.MakeCoverDisappear())
-                .Append(_inputManager.StartingCameraZoomEffect(_startingCameraEffectsDuration))
-                .AppendCallback(() =>
-                {
-                    if (_isTutorial)
-                    {
-                        _uiManager.ToggleHintButton(false);
-                        _uiManager.TogglePauseButton(true);
-                        DOVirtual.DelayedCall(0.1f, () => { TryGetHint(); _inputManager.ToggleCanInteract(true); });
-                    }
-                    else
-                    {
-                        _inputManager.ToggleCanInteract(true);
-                        _uiManager.TogglePauseButton(true);
-                        _uiManager.ToggleHintButton(true);
-                    }
-                });
+            _remainingTutorialHintAmount = _tutorialHintAmount;
+            DoStartingSequence();
         }
 
-        private void Pause(bool isPaused)
+        private void OnDestroy()
+        {
+            UnsubscribeFromEvents();
+            _audioService.Stop();
+            Time.timeScale = 1;
+
+            DOTween.KillAll();
+        }
+
+
+        private void TogglePause(bool isPaused)
         {
             Time.timeScale = 1;
             _inputManager.ToggleCanInteract(!isPaused);
@@ -95,20 +74,8 @@ namespace Project.Assets._Project._Scripts.Systems
 
         }
 
-        private void OnDestroy()
-        {
-            _uiManager.OnLevelReloadRequested -= _levelManager.ReloadLevel;
-            _uiManager.OnContinueToNextLevelRequested -= _levelManager.ContinueToNextLevel;
-            _uiManager.OnReturnToMenuRequested -= _levelManager.ReturnToMenu;
-            _uiManager.OnHintRequested -= TryGetHint;
-            _uiManager.OnPauseRequested -= Pause;
-            _hintManager.OnCurrentHintAmountChanged -= _uiManager.SetNumberOfHints;
-            //_blocks.ForEach(block => block.OnInteracted -= OnInteracted);
-            _audioService.Stop();
-            Time.timeScale = 1;
-
-            DOTween.KillAll();
-        }
+        
+        
 
         public void ManagedUpdate()
         {
@@ -136,7 +103,29 @@ namespace Project.Assets._Project._Scripts.Systems
             else _audioService.ToggleMute(false);
 
         }
-
+        private void SubscribeToEvents()
+        {
+            _uiManager.OnLevelReloadRequested += _levelManager.ReloadLevel;
+            _uiManager.OnContinueToNextLevelRequested += _levelManager.ContinueToNextLevel;
+            _uiManager.OnReturnToMenuRequested += _levelManager.ReturnToMenu;
+            _uiManager.OnHintRequested += TryGetHint;
+            _uiManager.OnPauseRequested += TogglePause;
+            _timerManager.OnTimeEnded += LoseLevel;
+            _hintManager.OnCurrentHintAmountChanged += _uiManager.SetNumberOfHints;
+            _blocks.ForEach(block => block.OnExit += OnBlockExited);
+            _allButtons.ForEach(button => button.onClick.AddListener(() => _audioService.Play(_audioData.AnyButtonClip, _audioData.AnyButtonVolume)));
+        }
+        private void UnsubscribeFromEvents()
+        {
+            _uiManager.OnLevelReloadRequested -= _levelManager.ReloadLevel;
+            _uiManager.OnContinueToNextLevelRequested -= _levelManager.ContinueToNextLevel;
+            _uiManager.OnReturnToMenuRequested -= _levelManager.ReturnToMenu;
+            _uiManager.OnHintRequested -= TryGetHint;
+            _uiManager.OnPauseRequested -= TogglePause;
+            _timerManager.OnTimeEnded -= LoseLevel;
+            _hintManager.OnCurrentHintAmountChanged -= _uiManager.SetNumberOfHints;
+            _blocks.ForEach(block => block.OnExit -= OnBlockExited);
+        }
         private void TryGetHint()
         {
             if(_isTutorial && _remainingTutorialHintAmount > 0)
@@ -173,25 +162,15 @@ namespace Project.Assets._Project._Scripts.Systems
         }
 
 
-        private void OnInteracted(bool isCorrect)
+        private void OnBlockExited()
         {
             if (_hasWon || _hasLost) return;
             _hintManager.OnAnyBlockInteracted();
             _uiManager.ToggleHintArrow(false);
             _showingHintArrow = false;
-
-            _currentNumberOfTries--;
-            _uiManager.SetNumberOfTries(_currentNumberOfTries);
-
-            if (!isCorrect)
-            {
-                _inputManager.ShakeCamera(_cameraShakeDuration, _cameraShakeAmplitude, _cameraShakeFrequency);
-                _audioService.Play(_audioData.WrongInteractionClip, _audioData.WrongInteractionVolume, UnityEngine.Random.Range(0.95f, 1.05f));
-            }
-            else
-            {
-                _audioService.Play(_audioData.CorrectInteractionClip, _audioData.CorrectInteractionVolume, UnityEngine.Random.Range(0.95f, 1.05f));
-            }
+            _audioService.Play(_audioData.CorrectInteractionClip, _audioData.CorrectInteractionVolume, UnityEngine.Random.Range(0.95f, 1.05f));
+            if (_hasWon) return;
+            CheckForWin();
             if (_isTutorial && _remainingTutorialHintAmount > 0)
             {
                 TryGetHint();
@@ -200,50 +179,47 @@ namespace Project.Assets._Project._Scripts.Systems
             {
                 _uiManager.ToggleHintButton(true);
             }
-            if (_currentNumberOfTries <= 0)
-            {
-                CheckForWinOrLose();
-            }
-            else
-            {
-                CheckForWin();
-            }
             
 
         }
 
         private void CheckForWin()
         {
+            print("Checking For Win");
             bool hasWon = true;
-            //foreach(var block in _blocks)
-            //{
-            //    if (!block.HasDisappeared)
-            //    {
-            //        hasWon = false;
-            //        break;
-            //    }
-            //}
+            foreach (var block in _blocks)
+            {
+                if (!block.HasExited)
+                {
+                    hasWon = false;
+                    break;
+                }
+            }
+
             if (hasWon) WinLevel();
         }
 
-        private void CheckForWinOrLose()
+        private void DoStartingSequence()
         {
-            CheckForLose();
-            if (!_hasLost) WinLevel();
-
-        }
-
-        private void CheckForLose()
-        {
-            //foreach (var block in _blocks)
-            //{
-            //    if (!block.HasDisappeared)
-            //    {
-
-            //        LoseLevel();
-            //        break;
-            //    }
-            //}
+            DOTween.Sequence()
+                            .Append(_levelManager.MakeCoverDisappear())
+                            .Append(_inputManager.StartingCameraZoomEffect(_startingCameraEffectsDuration))
+                            .AppendCallback(() =>
+                            {
+                                if (_isTutorial)
+                                {
+                                    _uiManager.ToggleHintButton(false);
+                                    _uiManager.TogglePauseButton(true);
+                                    DOVirtual.DelayedCall(0.1f, () => { TryGetHint(); _inputManager.ToggleCanInteract(true); });
+                                }
+                                else
+                                {
+                                    _inputManager.ToggleCanInteract(true);
+                                    _uiManager.TogglePauseButton(true);
+                                    _uiManager.ToggleHintButton(true);
+                                }
+                                _timerManager.StartTimer();
+                            });
         }
 
         private void WinLevel()

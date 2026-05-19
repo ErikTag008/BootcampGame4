@@ -10,6 +10,8 @@ namespace Project.Assets._Project._Scripts.UI
         [field: Header("Button References")]
         [field: SerializeField] public Button PauseButton { get; private set; }
         [field: SerializeField] public Button HintButton { get; private set; }
+        [field: Header("Timer")]
+        [SerializeField] private TMP_Text _timerText;
         [Header("Hint Number")]
         [SerializeField] private TMP_Text _numberOfHintsLeft;
         
@@ -29,21 +31,9 @@ namespace Project.Assets._Project._Scripts.UI
         private Tween _numberOfTriesMovementTween;
         private Tween _numberOfTriesColorTween;
 
-        public void SetNumberOfTries(int numberOfTries)
+        public void SetTimerText(string text)
         {
-            _numberOfTriesText.text = numberOfTries.ToString();
-            _numberOfTriesMovementTween?.Complete();
-            _numberOfTriesMovementTween?.Kill();
-            _numberOfTriesColorTween?.Complete();
-            _numberOfTriesColorTween?.Kill();
-            var position = _numberOfTriesText.rectTransform.position;
-            var color = _numberOfTriesText.color;
-            color.a = 0;
-            _numberOfTriesColorTween = DOVirtual.Color(color, _numberOfTriesText.color, _numberOfTriesAnimationDuration, c => _numberOfTriesText.color = c)
-                .SetEase(_numberOfTriesAnimationEase);
-            _numberOfTriesMovementTween = _numberOfTriesText.rectTransform.DOMove(position, _numberOfTriesAnimationDuration)
-                .From(position + (Vector3)_numberOfTriesAnimationPositionOffset)
-                .SetEase(_numberOfTriesAnimationEase);
+            _timerText.text = text;
         }
 
         public void SetNumberOfHints(int numberOfHints) 

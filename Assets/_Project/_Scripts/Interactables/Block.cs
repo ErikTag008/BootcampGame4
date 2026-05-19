@@ -27,6 +27,7 @@ namespace Project.Assets._Project._Scripts.Interactables
         private bool _canExit = true;
         private bool _hasExited = false;
         public event Action OnExit;
+        public bool HasExited => _hasExited;
 
 
         private Bounds _bounds;
@@ -63,9 +64,10 @@ namespace Project.Assets._Project._Scripts.Interactables
             {
                 if (_canExit && exitPoint.CanExit(_bounds, _color))
                 {
+                    _hasExited = true;
                     OnExit?.Invoke();
                     ExitThrough(exitPoint.GetExitVector());
-                    _hasExited = true;
+                    ToggleOutLine(false);
                     _canExit = false;
                 }
             }
@@ -73,6 +75,8 @@ namespace Project.Assets._Project._Scripts.Interactables
 
         private void ExitThrough(Vector3 direction)
         {
+            _rb.linearVelocity = Vector3.zero;
+            _rb.isKinematic = true;
             var tilePos = GetCurrentTilePos();
             transform.position = tilePos;
             transform.DOMove(transform.position + direction * _exitDistance, _exitDuration)

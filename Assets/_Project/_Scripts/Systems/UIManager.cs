@@ -42,7 +42,10 @@ namespace Project.Assets._Project._Scripts.Systems
             OnPauseRequested?.Invoke(false);
         }
 
-
+        public void ChangeTimerValue(string time)
+        {
+            _gameUIElements.SetTimerText(time);
+        }
         private void PauseButton()
         {
             _coreUIElements.ShowPauseScreen();
@@ -76,11 +79,6 @@ namespace Project.Assets._Project._Scripts.Systems
             _gameUIElements.SetNumberOfHints(num);
         }
 
-        public void SetNumberOfTries(int num)
-        {
-            if (num < 0) num = 0;
-            _gameUIElements.SetNumberOfTries(num);
-        }
 
         [ContextMenu("Lose")]
         public void OnLose()
