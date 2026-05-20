@@ -27,12 +27,30 @@ namespace Project.Assets._Project._Scripts.ShowIf.Editor
         {
             ShowIfAttribute showIf = (ShowIfAttribute)attribute;
 
-            SerializedProperty sourceProperty =
-                property.serializedObject.FindProperty(showIf.ConditionalSourceField);
+            if (showIf.CompareValue == null) return true;
+
+            string path = property.propertyPath;
+            int lastDot = path.LastIndexOf('.');
+            string basePath = lastDot == -1 ? "" : path.Substring(0, lastDot + 1);
+
+            string[] candidates = new string[]
+            {
+                basePath + showIf.ConditionalSourceField,
+                basePath + $"<{showIf.ConditionalSourceField}>k__BackingField",
+                showIf.ConditionalSourceField,
+                $"<{showIf.ConditionalSourceField}>k__BackingField"
+            };
+
+            SerializedProperty sourceProperty = null;
+            foreach (var candidate in candidates)
+            {
+                sourceProperty = property.serializedObject.FindProperty(candidate);
+                if (sourceProperty != null) break;
+            }
 
             if (sourceProperty == null)
             {
-                Debug.LogWarning($"ShowIf: Could not find field {showIf.ConditionalSourceField}");
+                Debug.LogWarning($"ShowIf: Could not find field {showIf.ConditionalSourceField} (tried relative and root paths)");
                 return true;
             }
 

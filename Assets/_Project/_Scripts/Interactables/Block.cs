@@ -26,8 +26,7 @@ namespace Project.Assets._Project._Scripts.Interactables
         [SerializeField] private float _exitDuration = 0.3f;
         [SerializeField] private float _exitDistance = 2.0f;
         [SerializeField] private Ease _exitEase = Ease.InOutCubic;
-        [SerializeField] private Ease _mergeEase = Ease.InOutCubic;
-        [SerializeField] private float _mergeDuration = 1f;
+        
         private bool _canExit = true;
         private bool _hasExited = false;
         private bool _isMerged = false;
@@ -36,20 +35,20 @@ namespace Project.Assets._Project._Scripts.Interactables
         public event Action<UnitColor, BlockType, Vector3, Quaternion> OnMerge; 
         public bool HasExited => _hasExited;
         [field: SerializeField] public bool HasTimeBonus { get; private set; } = false;
-        [field: SerializeField, ShowIf.ShowIf("HasTimeBonus", true)] public int TimeBonusInSeconds { get; private set; } = 5;
+        [field: SerializeField, ShowIf.ShowIf(nameof(HasTimeBonus), true)] public int TimeBonusInSeconds { get; private set; } = 5;
 
         [field: SerializeField] public bool HasMoveDelay { get; private set; } = false;
         [field: SerializeField, ShowIf.ShowIf(nameof(HasMoveDelay), true)] public int MoveDelay { get; private set; } = 5;
 
         [field: SerializeField] public bool IsMergable { get; private set; } = false;
         [field: SerializeField, ShowIf.ShowIf(nameof(IsMergable), true)] public BlockType Type { get; private set; } = BlockType.OneByOne;
+        [SerializeField, ShowIf.ShowIf(nameof(IsMergable), true)] private Ease _mergeEase = Ease.InOutCubic;
+        [SerializeField, ShowIf.ShowIf(nameof(IsMergable), true)] private float _mergeDuration = 1f;
         private Bounds _bounds;
         private Vector3? _offset;
         private Vector3? _targetPosition;
         private bool _isGettingDragged = false;
         private Tween _posLockInTween;
-
-
         private void Awake()
         {
             UpdateBounds();
