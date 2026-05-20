@@ -28,6 +28,14 @@ namespace Project.Assets._Project._Scripts.Interactables
         private bool _hasExited = false;
         public event Action OnExit;
         public bool HasExited => _hasExited;
+        [field: SerializeField] public bool HasTimeBonus { get; private set; } = false;
+        [field: SerializeField, ShowIf.ShowIf(nameof(HasTimeBonus), true)] public int TimeBonusInSeconds { get; private set; } = 5;
+
+        [field: SerializeField] public bool HasMoveDelay { get; private set; } = false;
+        [field: SerializeField, ShowIf.ShowIf(nameof(HasMoveDelay), true)] public int MoveDelay { get; private set; } = 5;
+
+        [field: SerializeField] public bool IsMergable { get; private set; } = false;
+        [field: SerializeField, ShowIf.ShowIf(nameof(IsMergable), true)] public BlockType Type { get; private set; } = BlockType.OneByOne;
 
 
         private Bounds _bounds;
