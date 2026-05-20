@@ -20,6 +20,14 @@ PrefabInstance:
       propertyPath: _exitDistance
       value: 10
       objectReference: {fileID: 0}
+    - target: {fileID: 592987627794175172, guid: 75225ece5a0e8a341a05851a07e89abe, type: 3}
+      propertyPath: <HasMoveDelay>k__BackingField
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 592987627794175172, guid: 75225ece5a0e8a341a05851a07e89abe, type: 3}
+      propertyPath: <HasTimeBonus>k__BackingField
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3476637084762227628, guid: 75225ece5a0e8a341a05851a07e89abe, type: 3}
       propertyPath: m_Size.x
       value: 0.95

@@ -16,6 +16,10 @@ PrefabInstance:
       propertyPath: _color
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 592987627794175172, guid: 75225ece5a0e8a341a05851a07e89abe, type: 3}
+      propertyPath: <Type>k__BackingField
+      value: 9
+      objectReference: {fileID: 0}
     - target: {fileID: 5649441730381678873, guid: 75225ece5a0e8a341a05851a07e89abe, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0

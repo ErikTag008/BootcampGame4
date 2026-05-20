@@ -3,6 +3,7 @@ using Gilzoide.UpdateManager;
 using KBCore.Refs;
 using Project.Assets._Project._Scripts.GridComponents;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Project.Assets._Project._Scripts.Interactables
@@ -11,6 +12,7 @@ namespace Project.Assets._Project._Scripts.Interactables
     public class Block : ValidatedManagedBehaviour, IDragable, IFixedUpdatable
     {
         [SerializeField] private UnitColor _color;
+        public UnitColor Color => _color;
         [SerializeField, Self] private Rigidbody _rb;
         [SerializeField, Self] private Collider[] _colliders;
         [SerializeField, Child] private MeshRenderer[] _renderers;
@@ -24,20 +26,23 @@ namespace Project.Assets._Project._Scripts.Interactables
         [SerializeField] private float _exitDuration = 0.3f;
         [SerializeField] private float _exitDistance = 2.0f;
         [SerializeField] private Ease _exitEase = Ease.InOutCubic;
+        [SerializeField] private Ease _mergeEase = Ease.InOutCubic;
+        [SerializeField] private float _mergeDuration = 1f;
         private bool _canExit = true;
         private bool _hasExited = false;
+        private bool _isMerged = false;
+        private bool _isMerging = false;
         public event Action OnExit;
+        public event Action<UnitColor, BlockType, Vector3, Quaternion> OnMerge; 
         public bool HasExited => _hasExited;
         [field: SerializeField] public bool HasTimeBonus { get; private set; } = false;
-        [field: SerializeField, ShowIf.ShowIf(nameof(HasTimeBonus), true)] public int TimeBonusInSeconds { get; private set; } = 5;
+        [field: SerializeField, ShowIf.ShowIf("HasTimeBonus", true)] public int TimeBonusInSeconds { get; private set; } = 5;
 
         [field: SerializeField] public bool HasMoveDelay { get; private set; } = false;
         [field: SerializeField, ShowIf.ShowIf(nameof(HasMoveDelay), true)] public int MoveDelay { get; private set; } = 5;
 
         [field: SerializeField] public bool IsMergable { get; private set; } = false;
         [field: SerializeField, ShowIf.ShowIf(nameof(IsMergable), true)] public BlockType Type { get; private set; } = BlockType.OneByOne;
-
-
         private Bounds _bounds;
         private Vector3? _offset;
         private Vector3? _targetPosition;
@@ -58,12 +63,42 @@ namespace Project.Assets._Project._Scripts.Interactables
 
         private void OnCollisionEnter(Collision collision)
         {
-            //CheckExitCollision(collision);
+            CheckMergeCollision(collision);
+        }
+
+        private void CheckMergeCollision(Collision collision)
+        {
+            if (collision.collider.TryGetComponent(out Block otherBlock) && otherBlock.IsMergable)
+            {
+                if (!_isMerged && otherBlock.CanMerge(_bounds, _color, Type, out var mergedResultColor))
+                {
+                    _isMerged = true;
+
+                    var pos = transform.position + (otherBlock.transform.position - transform.position) / 2;
+                    DOTween.Sequence()
+                        .Join(otherBlock.GetMerged(pos, _mergeDuration))
+                        .Join(GetMerged(pos + Vector3.one * 0.01f, _mergeDuration))
+                        .AppendCallback(() =>
+                        {
+                            OnMerge?.Invoke(mergedResultColor, otherBlock.Type, pos, transform.rotation);
+                        });
+
+                }
+                else
+                {
+                    print($"Cannot Merge, otherBlock = {otherBlock}, otherBlock.IsMergable = {otherBlock.IsMergable}, _isMerged = {_isMerged}");
+                }
+            }
+        }
+
+        private void OnCollisionStay(Collision collision)
+        {
+            CheckMergeCollision(collision);
         }
 
         private void OnTriggerEnter(Collider other)
         {
-            CheckExitCollision(other);            
+            CheckExitCollision(other);
         }
 
         private void OnTriggerStay(Collider other)
@@ -72,10 +107,7 @@ namespace Project.Assets._Project._Scripts.Interactables
 
         }
 
-        private void OnCollisionStay(Collision collision)
-        {
-            //CheckExitCollision(collision);
-        }
+        
 
         private void CheckExitCollision(Collider collider)
         {
@@ -90,6 +122,49 @@ namespace Project.Assets._Project._Scripts.Interactables
                     _canExit = false;
                 }
             }
+        }
+
+        public bool CanMerge(Bounds blockBounds, UnitColor blockColor, BlockType blockType, out UnitColor mergedResultColor)
+        {
+            
+            mergedResultColor = UnitColor.Orange;
+            if (!IsMergable || blockType != Type || _isMerged)
+            {
+                return false;
+            }
+            
+            if(UnitColorMappings.MergeResults.TryGetValue((_color, blockColor), out var result))
+            {
+                mergedResultColor = result;
+            }
+            else
+            {
+                print("wrong color");
+                return false;
+            }
+
+            Bounds thisBounds = _bounds;
+            if (blockBounds.min.x >= thisBounds.min.x - 0.1f && blockBounds.max.x <= thisBounds.max.x + 0.1f ||
+                blockBounds.min.z >= thisBounds.min.z - 0.1f && blockBounds.max.z <= thisBounds.max.z + 0.1f)
+            {
+                _isMerged = true;
+                return true;
+            }
+
+            print("Wrong Bounds");
+            return false;
+        }
+
+        public Tween GetMerged(Vector3 pos, float duration)
+        {
+            if(!IsMergable || _isMerging) return null;
+            _isMerging = true;
+            _rb.isKinematic = true;
+            return transform.DOMove(pos, duration).SetEase(_mergeEase).OnComplete(() =>
+            {
+                gameObject.SetActive(false);
+                _hasExited = true;
+            });
         }
 
         private void ExitThrough(Vector3 direction)
@@ -112,7 +187,7 @@ namespace Project.Assets._Project._Scripts.Interactables
 
         private void GoTowardsTargetPosition()
         {
-            if (_targetPosition == null || _offset == null || !_isGettingDragged || _hasExited) return;
+            if (_targetPosition == null || _offset == null || !_isGettingDragged || _hasExited || _isMerged) return;
 
             Vector3 desiredPosition = _targetPosition.Value + _offset.Value;
             Vector3 currentPosition = _rb.position;
@@ -202,12 +277,10 @@ namespace Project.Assets._Project._Scripts.Interactables
 #if UNITY_EDITOR
         private void OnDrawGizmos()
         {
-            Gizmos.color = Color.yellow;
+            Gizmos.color = UnityEngine.Color.yellow;
             UpdateBounds();
             Gizmos.DrawWireCube(_bounds.center, _bounds.size);
         }
-
-        
 #endif
     }
 }
@@ -220,4 +293,17 @@ public enum UnitColor
     Orange,
     Purple,
     Green
+}
+
+public static class UnitColorMappings
+{
+    public static Dictionary<(UnitColor, UnitColor), UnitColor> MergeResults = new Dictionary<(UnitColor, UnitColor), UnitColor>
+    {
+        { (UnitColor.Red, UnitColor.Blue), UnitColor.Purple },
+        { (UnitColor.Blue, UnitColor.Red), UnitColor.Purple },
+        { (UnitColor.Red, UnitColor.Yellow), UnitColor.Orange },
+        { (UnitColor.Yellow, UnitColor.Red), UnitColor.Orange },
+        { (UnitColor.Yellow, UnitColor.Blue), UnitColor.Green },
+        { (UnitColor.Blue, UnitColor.Yellow), UnitColor.Green }
+    };
 }

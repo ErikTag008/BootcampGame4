@@ -2449,9 +2449,9 @@ MonoBehaviour:
   - {fileID: 7261281527769625762}
   _blocks:
   - {fileID: 699426154}
-  - {fileID: 1765234970}
   - {fileID: 1377043930}
   - {fileID: 1397589060}
+  - {fileID: 1765234970}
 --- !u!1001 &7193569781453954811
 PrefabInstance:
   m_ObjectHideFlags: 0
