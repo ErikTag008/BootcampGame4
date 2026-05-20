@@ -50,17 +50,28 @@ namespace Project.Assets._Project._Scripts.Interactables
 
         private void OnCollisionEnter(Collision collision)
         {
-            CheckExitCollision(collision);
+            //CheckExitCollision(collision);
+        }
+
+        private void OnTriggerEnter(Collider other)
+        {
+            CheckExitCollision(other);            
+        }
+
+        private void OnTriggerStay(Collider other)
+        {
+            CheckExitCollision(other);
+
         }
 
         private void OnCollisionStay(Collision collision)
         {
-            CheckExitCollision(collision);
+            //CheckExitCollision(collision);
         }
 
-        private void CheckExitCollision(Collision collision)
+        private void CheckExitCollision(Collider collider)
         {
-            if (collision.collider.CompareTag("Exit") && collision.collider.TryGetComponent(out ExitPoint exitPoint))
+            if (collider.CompareTag("Exit") && collider.TryGetComponent(out ExitPoint exitPoint))
             {
                 if (_canExit && exitPoint.CanExit(_bounds, _color))
                 {
