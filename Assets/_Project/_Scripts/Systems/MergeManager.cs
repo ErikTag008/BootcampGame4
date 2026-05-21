@@ -10,6 +10,7 @@ namespace Project.Assets._Project._Scripts.Systems
     {
         [Inject] private readonly List<Block> _blocks;
         [SerializeField] private List<Block> _mergedBlockPrefabs;
+        public event Action<Block> OnBlockCreated;
 
         private void Start()
         {
@@ -26,6 +27,7 @@ namespace Project.Assets._Project._Scripts.Systems
                 if(blockPrefab.Type == type && blockPrefab.Color == color)
                 {
                     var mergedBlock = Instantiate(blockPrefab, pos, rotation);
+                    OnBlockCreated?.Invoke(mergedBlock);
                     break;
                 }
             }

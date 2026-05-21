@@ -22,6 +22,7 @@ namespace Project.Assets._Project._Scripts.DI
         [SerializeField, Scene] private HintManager _hintManager;
         [SerializeField, Scene] private TimerManager _timerManager;
         [SerializeField, Scene] private AudioManager _audioManager;
+        [SerializeField, Scene] private MergeManager _mergeManager;
         [SerializeField, Scene] private GridGenerator _gridGenerator;
         [Header("Camera")]
         [SerializeField, Scene] private Camera _camera;
@@ -47,6 +48,7 @@ namespace Project.Assets._Project._Scripts.DI
             builder.AddSingleton(_inputManager);
             builder.AddSingleton(_levelManager);
             builder.AddSingleton(_hintManager);
+            builder.AddSingleton(_mergeManager);
             builder.AddSingleton(_uiManager);
             builder.AddSingleton(_timerManager);
             builder.AddSingleton(_gridGenerator);

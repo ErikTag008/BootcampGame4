@@ -17,6 +17,7 @@ namespace Project.Assets._Project._Scripts.Systems
         [Inject] private readonly HintManager _hintManager;
         [Inject] private readonly IAudioService _audioService;
         [Inject] private readonly TimerManager _timerManager;
+        [Inject] private readonly MergeManager _mergeManager;
         [Inject] private readonly PlayerPrefsData _playerPrefsData;
         //[Inject] private readonly List<MovableBlock> _blocks;
         [Inject] private readonly List<Button> _allButtons;
@@ -111,10 +112,18 @@ namespace Project.Assets._Project._Scripts.Systems
             _uiManager.OnHintRequested += TryGetHint;
             _uiManager.OnPauseRequested += TogglePause;
             _timerManager.OnTimeEnded += LoseLevel;
+            _mergeManager.OnBlockCreated += RegisterBlock;
             _hintManager.OnCurrentHintAmountChanged += _uiManager.SetNumberOfHints;
             _blocks.ForEach(block => block.OnExit += OnBlockExited);
             _allButtons.ForEach(button => button.onClick.AddListener(() => _audioService.Play(_audioData.AnyButtonClip, _audioData.AnyButtonVolume)));
         }
+
+        private void RegisterBlock(Block block)
+        {
+            _blocks.Add(block);
+            block.OnExit += OnBlockExited;
+        }
+
         private void UnsubscribeFromEvents()
         {
             _uiManager.OnLevelReloadRequested -= _levelManager.ReloadLevel;
@@ -123,6 +132,7 @@ namespace Project.Assets._Project._Scripts.Systems
             _uiManager.OnHintRequested -= TryGetHint;
             _uiManager.OnPauseRequested -= TogglePause;
             _timerManager.OnTimeEnded -= LoseLevel;
+            _mergeManager.OnBlockCreated -= RegisterBlock;
             _hintManager.OnCurrentHintAmountChanged -= _uiManager.SetNumberOfHints;
             _blocks.ForEach(block => block.OnExit -= OnBlockExited);
         }
@@ -190,7 +200,7 @@ namespace Project.Assets._Project._Scripts.Systems
             bool hasWon = true;
             foreach (var block in _blocks)
             {
-                if (!block.HasExited)
+                if (block != null && block.gameObject.activeInHierarchy && !block.HasExited)
                 {
                     hasWon = false;
                     break;
