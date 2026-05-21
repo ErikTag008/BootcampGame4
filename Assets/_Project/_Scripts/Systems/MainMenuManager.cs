@@ -20,6 +20,7 @@ namespace Project.Assets._Project._Scripts.Systems
         [SerializeField] private float _loadingCoverFullAppearDuration = 1f;
         [SerializeField] private Ease _loadingCoverAppearEase = Ease.OutCubic;
         [SerializeField] private Ease _loadingCoverDisappearEase = Ease.InCubic;
+        [SerializeField] private Sprite _lockedLevelSprite;
 
         private Image _loadingCover;
         private bool _musicTurnedOn = true;
@@ -181,8 +182,16 @@ namespace Project.Assets._Project._Scripts.Systems
                             button.interactable = true;
                             continue;
                         }
-
-                        button.interactable = valueInt <= lastUnlockedLevel;
+                        bool isInteractable = valueInt <= lastUnlockedLevel;
+                        if (isInteractable)
+                        {
+                            button.interactable = true;
+                        }
+                        else
+                        {
+                            button.image.sprite = _lockedLevelSprite;
+                            button.interactable = false;
+                        }
                     }
                     else
                     {
@@ -193,6 +202,7 @@ namespace Project.Assets._Project._Scripts.Systems
                 }
                 else
                 {
+                    button.image.sprite = _lockedLevelSprite;
                     button.interactable = false;
                 }
             }
