@@ -1224,6 +1224,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 4586222215936205523, guid: 16c72c1c7769d8c4f90bdd6530284013, type: 3}
+      propertyPath: m_Name
+      value: =====PERSISTENT_GO=====
+      objectReference: {fileID: 0}
     - target: {fileID: 6347895332150427655, guid: 16c72c1c7769d8c4f90bdd6530284013, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0
@@ -1263,10 +1267,6 @@ PrefabInstance:
     - target: {fileID: 6347895332150427655, guid: 16c72c1c7769d8c4f90bdd6530284013, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4586222215936205523, guid: 16c72c1c7769d8c4f90bdd6530284013, type: 3}
-      propertyPath: m_Name
-      value: =====PERSISTENT_GO=====
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1468,7 +1468,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4370644338646686039, guid: f9b384c456eb78541854165a369af269, type: 3}
       propertyPath: m_text
-      value: Level 2
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 4695236588835444395, guid: f9b384c456eb78541854165a369af269, type: 3}
       propertyPath: m_Name
@@ -1548,6 +1548,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6918a9d40b998ca4eabbd05eebb28eed, type: 3}
+--- !u!114 &5876160971436351287 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7650564739088884745, guid: 6918a9d40b998ca4eabbd05eebb28eed, type: 3}
+  m_PrefabInstance: {fileID: 5876160971436351286}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ffc1a551905a99c46b38aad7517a6014, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: ProjectAssembly::Project.Assets._Project._Scripts.Systems.MergeManager
 --- !u!1001 &6248624888912814488
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1702,6 +1713,7 @@ MonoBehaviour:
   _hintManager: {fileID: 1465755317}
   _timerManager: {fileID: 577184483}
   _audioManager: {fileID: 33045937}
+  _mergeManager: {fileID: 5876160971436351287}
   _gridGenerator: {fileID: 634593740}
   _camera: {fileID: 1893139778}
   _cinemachineCam: {fileID: 591214724}

@@ -58,6 +58,11 @@ namespace Project.Assets._Project._Scripts.Systems
             _gameUIElements.ToggleHintArrow(isActive);
         }
 
+        public void ToggleLevelNumberImage(bool isActive)
+        {
+            _gameUIElements.ToggleLevelNumberImage(isActive);
+        }   
+
         public void ToggleHintButton(bool isActive)
         {
             _gameUIElements.ToggleHintButton(isActive);

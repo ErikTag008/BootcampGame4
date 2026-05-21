@@ -51,6 +51,7 @@ namespace Project.Assets._Project._Scripts.Systems
             _inputManager.ToggleCanInteract(false);
             _uiManager.ToggleHintButton(false);
             _uiManager.TogglePauseButton(false);
+            _uiManager.ToggleLevelNumberImage(false);
             _remainingTutorialHintAmount = _tutorialHintAmount;
             DoStartingSequence();
         }
@@ -221,6 +222,7 @@ namespace Project.Assets._Project._Scripts.Systems
                                 {
                                     _uiManager.ToggleHintButton(false);
                                     _uiManager.TogglePauseButton(true);
+                                    _uiManager.ToggleLevelNumberImage(true);
                                     DOVirtual.DelayedCall(0.1f, () => { TryGetHint(); _inputManager.ToggleCanInteract(true); });
                                 }
                                 else
@@ -228,6 +230,8 @@ namespace Project.Assets._Project._Scripts.Systems
                                     _inputManager.ToggleCanInteract(true);
                                     _uiManager.TogglePauseButton(true);
                                     _uiManager.ToggleHintButton(true);
+                                    _uiManager.ToggleLevelNumberImage(true);
+
                                 }
                                 _timerManager.StartTimer();
                             });

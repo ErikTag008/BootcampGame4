@@ -7,7 +7,7 @@ namespace Project.Assets._Project._Scripts.UI
 {
     public class AppearAnimationOnEnable : ValidatedMonoBehaviour
     {
-        [SerializeField, Self] private Image _image;
+        [SerializeField, Self] private RectTransform _rectTransform;
         [SerializeField] private float _duration = 0.5f;
         [SerializeField] private Vector3 _offsetFromOriginalPos = Vector3.zero;
         [SerializeField] private Ease _animationEase = Ease.OutCubic;
@@ -17,9 +17,9 @@ namespace Project.Assets._Project._Scripts.UI
         {
             _tween?.Complete();
             _tween?.Kill();
-            _startingPos = _image.rectTransform.localPosition;
-            _image.rectTransform.localPosition = _startingPos + _offsetFromOriginalPos;
-            _tween = _image.rectTransform.DOLocalMove(_startingPos, _duration)
+            _startingPos = _rectTransform.localPosition;
+            _rectTransform.localPosition = _startingPos + _offsetFromOriginalPos;
+            _tween = _rectTransform.DOLocalMove(_startingPos, _duration)
                 .SetEase(_animationEase);
         }
     }

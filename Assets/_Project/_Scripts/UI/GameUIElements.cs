@@ -10,6 +10,7 @@ namespace Project.Assets._Project._Scripts.UI
         [field: Header("Button References")]
         [field: SerializeField] public Button PauseButton { get; private set; }
         [field: SerializeField] public Button HintButton { get; private set; }
+        [field: SerializeField] public Image LevelNumber { get; private set; }
         [field: Header("Timer")]
         [SerializeField] private TMP_Text _timerText;
         [Header("Hint Number")]
@@ -23,13 +24,6 @@ namespace Project.Assets._Project._Scripts.UI
         [SerializeField] private float _hintArrowAnimationDuration = 1f;
         [SerializeField] private Ease _hintArrowAnimationEase = Ease.InOutSine;
         private Tween _arrowTween;
-        [Header("Tries Number")]
-        [SerializeField] private TMP_Text _numberOfTriesText;
-        [SerializeField] private float _numberOfTriesAnimationDuration = 0.3f;
-        [SerializeField] private Vector2 _numberOfTriesAnimationPositionOffset = new Vector2(0f, 30f);
-        [SerializeField] private Ease _numberOfTriesAnimationEase;
-        private Tween _numberOfTriesMovementTween;
-        private Tween _numberOfTriesColorTween;
 
         public void SetTimerText(string text)
         {
@@ -49,6 +43,11 @@ namespace Project.Assets._Project._Scripts.UI
         public void ToggleHintButton(bool isActive)
         {
             HintButton.gameObject.SetActive(isActive);
+        }
+
+        public void ToggleLevelNumberImage(bool isActive)
+        {
+            LevelNumber.gameObject.SetActive(isActive);
         }
 
         public void TogglePauseButton(bool isActive)
