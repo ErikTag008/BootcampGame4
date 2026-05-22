@@ -89,6 +89,9 @@ MonoBehaviour:
   _tileLayer:
     serializedVersion: 2
     m_Bits: 128
+  _obstacleForMergeLayer:
+    serializedVersion: 2
+    m_Bits: 65
   _moveSpeed: 7.5
   _maxSpeed: 20
   _posLockInDuration: 0.1
@@ -96,14 +99,14 @@ MonoBehaviour:
   _exitDuration: 0.3
   _exitDistance: 5
   _exitEase: 10
-  _mergeEase: 28
-  _mergeDuration: 0.3
   <HasTimeBonus>k__BackingField: 0
   <TimeBonusInSeconds>k__BackingField: 5
   <HasMoveDelay>k__BackingField: 0
   <MoveDelay>k__BackingField: 5
   <IsMergable>k__BackingField: 0
   <Type>k__BackingField: 0
+  _mergeEase: 28
+  _mergeDuration: 0.3
 --- !u!65 &3476637084762227628
 BoxCollider:
   m_ObjectHideFlags: 0

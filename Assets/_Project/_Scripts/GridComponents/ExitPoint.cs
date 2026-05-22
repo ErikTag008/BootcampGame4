@@ -26,7 +26,7 @@ namespace Project.Assets._Project._Scripts.GridComponents
         {
             if (_useColorRestriction && blockColor != _requiredColor)
             {
-                print("Wrong Color");
+                //print("Wrong Color");
                 return false;
             }
 

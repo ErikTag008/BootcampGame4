@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 7441439948042777958}
   - component: {fileID: 4686815815227495772}
   - component: {fileID: 4587076525874202074}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: WallColliders
   m_TagString: Untagged
   m_Icon: {fileID: 0}

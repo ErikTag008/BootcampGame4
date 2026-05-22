@@ -1,9 +1,11 @@
 using DG.Tweening;
+using EasyTextEffects.Editor.MyBoxCopy.Extensions;
 using Gilzoide.UpdateManager;
 using KBCore.Refs;
 using Project.Assets._Project._Scripts.GridComponents;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Project.Assets._Project._Scripts.Interactables
@@ -19,6 +21,7 @@ namespace Project.Assets._Project._Scripts.Interactables
         [SerializeField] private RenderingLayerMask _noOutlineLayer;
         [SerializeField] private RenderingLayerMask _outlinedLayer;
         [SerializeField] private LayerMask _tileLayer;
+        [SerializeField] private LayerMask _obstacleForMergeLayer;
         [SerializeField] private float _moveSpeed = 10f;
         [SerializeField] private float _maxSpeed = 20f;
         [SerializeField] private float _posLockInDuration = 0.1f;
@@ -26,6 +29,7 @@ namespace Project.Assets._Project._Scripts.Interactables
         [SerializeField] private float _exitDuration = 0.3f;
         [SerializeField] private float _exitDistance = 2.0f;
         [SerializeField] private Ease _exitEase = Ease.InOutCubic;
+        
         
         private bool _canExit = true;
         private bool _hasExited = false;
@@ -67,27 +71,73 @@ namespace Project.Assets._Project._Scripts.Interactables
 
         private void CheckMergeCollision(Collision collision)
         {
+            if (!IsMergable) return;
             if (collision.collider.TryGetComponent(out Block otherBlock) && otherBlock.IsMergable)
             {
                 if (!_isMerged && otherBlock.CanMerge(_bounds, _color, Type, out var mergedResultColor))
                 {
-                    _isMerged = true;
+                    Vector3 meetPoint = (_bounds.center + otherBlock._bounds.center) / 2f;
+                    Vector3 thisTarget = meetPoint - (_bounds.center - transform.position);
+                    Vector3 otherTarget = meetPoint - (otherBlock._bounds.center - otherBlock.transform.position);
 
-                    var pos = transform.position + (otherBlock.transform.position - transform.position) / 2;
+                    // Snap targets to tiles (normalized)
+                    Vector3 snappedThisTarget = SnapToTilePosition(thisTarget);
+                    Vector3 snappedOtherTarget = SnapToTilePosition(otherTarget);
+
+                    // Check path from this block center to snappedThisTarget and from other to snappedOtherTarget.
+                    Vector3 dirThis = snappedThisTarget - _bounds.center;
+                    float distThis = Mathf.Max(0f, dirThis.magnitude / 2 - 0.05f);
+                    Vector3 dirOther = snappedOtherTarget - otherBlock._bounds.center;
+                    float distOther = Mathf.Max(0f, dirOther.magnitude / 2 - 0.05f);
+
+                    if (!IsPathEmpty(dirThis, distThis, _bounds, this, otherBlock))
+                    {
+                        print("Path Is Not Empty");
+                        return;
+                    }
+
                     DOTween.Sequence()
-                        .Join(otherBlock.GetMerged(pos, _mergeDuration))
-                        .Join(GetMerged(pos + Vector3.one * 0.01f, _mergeDuration))
+                        .Join(otherBlock.GetMerged(snappedOtherTarget, _mergeDuration))
+                        .Join(GetMerged(snappedThisTarget + Vector3.one * 0.01f, _mergeDuration))
                         .AppendCallback(() =>
                         {
-                            OnMerge?.Invoke(mergedResultColor, otherBlock.Type, pos, transform.rotation);
+                            // Notify spawn position as snapped (tile normalized)
+                            OnMerge?.Invoke(mergedResultColor, otherBlock.Type, snappedThisTarget, transform.rotation);
                         });
-
-                }
-                else
-                {
-                    print($"Cannot Merge, otherBlock = {otherBlock}, otherBlock.IsMergable = {otherBlock.IsMergable}, _isMerged = {_isMerged}");
                 }
             }
+        }
+
+        private bool IsPathEmpty(Vector3 direction, float distance, Bounds bounds, Block thisBlock, Block otherBlock)
+        {
+            if (direction.sqrMagnitude <= 0.0001f || distance <= 0f) return true;
+
+            Vector3 dir = direction.normalized;
+            
+            // Start a tiny bit ahead to avoid hitting self-colliders at origin
+            Vector3 origin = bounds.center + dir * 0.1f;
+            var rays = new RaycastHit[5];
+            Vector3 halfExtents = bounds.extents;
+            halfExtents *= 0.8f;
+            int rayCount = Physics.BoxCastNonAlloc(origin, halfExtents, dir, rays, Quaternion.identity, distance, _obstacleForMergeLayer);
+            int checkCount = Mathf.Min(rayCount, rays.Length);
+            foreach(RaycastHit ray in rays)
+            {
+                if (ray.collider == null) continue;
+                print(ray.collider.name);
+            }
+            for (int i = 0; i < checkCount; i++)
+            {
+                var hit = rays[i];
+                if (hit.collider == null) continue;
+                // ignore very close hits caused by starting overlap
+                //if (hit.distance <= 0.05f) continue;
+                var hitGo = hit.collider.gameObject;
+                if (hitGo == thisBlock.gameObject || hitGo == otherBlock.gameObject) continue;
+                print($"Hit {hit.collider.name} while checking path");
+                return false;
+            }
+            return true;
         }
 
         private void OnCollisionStay(Collision collision)
@@ -125,20 +175,18 @@ namespace Project.Assets._Project._Scripts.Interactables
 
         public bool CanMerge(Bounds blockBounds, UnitColor blockColor, BlockType blockType, out UnitColor mergedResultColor)
         {
-            
             mergedResultColor = UnitColor.Orange;
             if (!IsMergable || blockType != Type || _isMerged)
             {
                 return false;
             }
-            
             if(UnitColorMappings.MergeResults.TryGetValue((_color, blockColor), out var result))
             {
                 mergedResultColor = result;
             }
             else
             {
-                print("wrong color");
+                //print("wrong color");
                 return false;
             }
 
@@ -146,17 +194,17 @@ namespace Project.Assets._Project._Scripts.Interactables
             if (blockBounds.min.x >= thisBounds.min.x - 0.1f && blockBounds.max.x <= thisBounds.max.x + 0.1f ||
                 blockBounds.min.z >= thisBounds.min.z - 0.1f && blockBounds.max.z <= thisBounds.max.z + 0.1f)
             {
-                _isMerged = true;
                 return true;
             }
 
-            print("Wrong Bounds");
+            //print("Wrong Bounds");
             return false;
         }
 
         public Tween GetMerged(Vector3 pos, float duration)
         {
             if(!IsMergable || _isMerging) return null;
+            _isMerged = true;
             _isMerging = true;
             _rb.isKinematic = true;
             return transform.DOMove(pos, duration).SetEase(_mergeEase).OnComplete(() =>
@@ -263,6 +311,23 @@ namespace Project.Assets._Project._Scripts.Interactables
             }
             finalPos.y = 0f;
             return finalPos;
+        }
+
+        private Vector3 SnapToTilePosition(Vector3 pos)
+        {
+            Vector3 origin = pos + Vector3.up * 5f;
+            if (Physics.Raycast(origin, Vector3.down, out var hit, 10f, _tileLayer))
+            {
+                Vector3 tilePos = hit.transform.position;
+                tilePos.y = 0f;
+                return tilePos;
+            }
+            // fallback: snap to nearest integer grid
+            Vector3 fallback = pos;
+            fallback.x = Mathf.Round(fallback.x);
+            fallback.z = Mathf.Round(fallback.z);
+            fallback.y = 0f;
+            return fallback;
         }
 
         public void UpdateDrag(Vector3 target)
