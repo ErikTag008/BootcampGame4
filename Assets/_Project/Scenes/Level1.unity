@@ -1370,6 +1370,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2091aecdbe3e3024aa1940268412cb4d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: ProjectAssembly::Project.Tile
+--- !u!114 &197645762 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7650564739088884745, guid: 6918a9d40b998ca4eabbd05eebb28eed, type: 3}
+  m_PrefabInstance: {fileID: 1888598424}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ffc1a551905a99c46b38aad7517a6014, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: ProjectAssembly::Project.Assets._Project._Scripts.Systems.MergeManager
 --- !u!1 &207460800
 GameObject:
   m_ObjectHideFlags: 0
@@ -8267,7 +8278,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3896059164049948305, guid: c19ce2662b390b4438644cf0644796ab, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -0.47
       objectReference: {fileID: 0}
     - target: {fileID: 3896059164049948305, guid: c19ce2662b390b4438644cf0644796ab, type: 3}
       propertyPath: m_LocalPosition.z
@@ -8301,14 +8312,62 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4528833003103147557, guid: c19ce2662b390b4438644cf0644796ab, type: 3}
+      propertyPath: field of view
+      value: 93.09632
+      objectReference: {fileID: 0}
+    - target: {fileID: 4528833003103147557, guid: c19ce2662b390b4438644cf0644796ab, type: 3}
+      propertyPath: near clip plane
+      value: 0.1
+      objectReference: {fileID: 0}
     - target: {fileID: 4949937853008573385, guid: c19ce2662b390b4438644cf0644796ab, type: 3}
       propertyPath: m_Name
       value: =====RENDERING=====
+      objectReference: {fileID: 0}
+    - target: {fileID: 6810480735208914593, guid: c19ce2662b390b4438644cf0644796ab, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 11.790507
+      objectReference: {fileID: 0}
+    - target: {fileID: 6810480735208914593, guid: c19ce2662b390b4438644cf0644796ab, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -3.9999998
+      objectReference: {fileID: 0}
+    - target: {fileID: 6810480735208914593, guid: c19ce2662b390b4438644cf0644796ab, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.8660254
+      objectReference: {fileID: 0}
+    - target: {fileID: 6810480735208914593, guid: c19ce2662b390b4438644cf0644796ab, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6810480735208914593, guid: c19ce2662b390b4438644cf0644796ab, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 55
       objectReference: {fileID: 0}
     - target: {fileID: 8180457034856401308, guid: c19ce2662b390b4438644cf0644796ab, type: 3}
       propertyPath: Target.TrackingTarget
       value: 
       objectReference: {fileID: 1816235114}
+    - target: {fileID: 8929767834752039599, guid: c19ce2662b390b4438644cf0644796ab, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 11.790507
+      objectReference: {fileID: 0}
+    - target: {fileID: 8929767834752039599, guid: c19ce2662b390b4438644cf0644796ab, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -3.9999998
+      objectReference: {fileID: 0}
+    - target: {fileID: 8929767834752039599, guid: c19ce2662b390b4438644cf0644796ab, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.8660254
+      objectReference: {fileID: 0}
+    - target: {fileID: 8929767834752039599, guid: c19ce2662b390b4438644cf0644796ab, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8929767834752039599, guid: c19ce2662b390b4438644cf0644796ab, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 60
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -9886,6 +9945,7 @@ MonoBehaviour:
   _hintManager: {fileID: 1465755317}
   _timerManager: {fileID: 577184483}
   _audioManager: {fileID: 33045937}
+  _mergeManager: {fileID: 197645762}
   _gridGenerator: {fileID: 634593740}
   _camera: {fileID: 1893139778}
   _cinemachineCam: {fileID: 591214724}
