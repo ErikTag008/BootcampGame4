@@ -115,7 +115,8 @@ namespace Project.Assets._Project._Scripts.Systems
             _timerManager.OnTimeEnded += LoseLevel;
             _mergeManager.OnBlockCreated += RegisterBlock;
             _hintManager.OnCurrentHintAmountChanged += _uiManager.SetNumberOfHints;
-            _blocks.ForEach(block => block.OnExit += OnBlockExited);
+            _blocks.ForEach(block => { block.OnExit += OnBlockExited; block.OnTimeBonusAcquired += _timerManager.AddTime; });
+            
             _allButtons.ForEach(button => button.onClick.AddListener(() => _audioService.Play(_audioData.AnyButtonClip, _audioData.AnyButtonVolume)));
         }
 
@@ -135,7 +136,7 @@ namespace Project.Assets._Project._Scripts.Systems
             _timerManager.OnTimeEnded -= LoseLevel;
             _mergeManager.OnBlockCreated -= RegisterBlock;
             _hintManager.OnCurrentHintAmountChanged -= _uiManager.SetNumberOfHints;
-            _blocks.ForEach(block => block.OnExit -= OnBlockExited);
+            _blocks.ForEach(block => { block.OnExit -= OnBlockExited; block.OnTimeBonusAcquired -= _timerManager.AddTime; });
         }
         private void TryGetHint()
         {

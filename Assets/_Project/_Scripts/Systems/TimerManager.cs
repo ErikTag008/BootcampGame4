@@ -37,6 +37,13 @@ namespace Project.Assets._Project._Scripts.Systems
             string time = FormatCurrentTime();
             _uiManager.ChangeTimerValue(time);
         }
+        public void AddTime(int seconds)
+        {
+            _timerCurrentValueInSeconds += seconds;
+            string time = FormatCurrentTime();
+            _uiManager.ChangeTimerValue(time);
+        }
+
         private string FormatCurrentTime()
         {
             int minutes = (int)(_timerCurrentValueInSeconds / 60);
