@@ -40,9 +40,10 @@ namespace Project.Assets._Project._Scripts.Interactables
         public bool HasExited => _hasExited;
         [field: SerializeField] public bool HasTimeBonus { get; private set; } = false;
         [field: SerializeField, ShowIf.ShowIf(nameof(HasTimeBonus), true)] public int TimeBonusInSeconds { get; private set; } = 5;
-
+        public Action<int> OnTimeBonusAcquired;
         [field: SerializeField] public bool HasMoveDelay { get; private set; } = false;
         [field: SerializeField, ShowIf.ShowIf(nameof(HasMoveDelay), true)] public int MoveDelay { get; private set; } = 5;
+        private int _currentMoveDelay;
 
         [field: SerializeField] public bool IsMergable { get; private set; } = false;
         [field: SerializeField, ShowIf.ShowIf(nameof(IsMergable), true)] public BlockType Type { get; private set; } = BlockType.OneByOne;
@@ -58,6 +59,7 @@ namespace Project.Assets._Project._Scripts.Interactables
             UpdateBounds();
             ToggleOutLine(false);
             _rb.isKinematic = true;
+            _currentMoveDelay = MoveDelay;
         }
         public void ManagedFixedUpdate()
         {
@@ -156,7 +158,11 @@ namespace Project.Assets._Project._Scripts.Interactables
 
         }
 
-        
+        public void DepleteMoveDelay()
+        {
+            if (!HasMoveDelay) return;
+            
+        }
 
         private void CheckExitCollision(Collider collider)
         {
@@ -218,6 +224,7 @@ namespace Project.Assets._Project._Scripts.Interactables
         {
             _rb.linearVelocity = Vector3.zero;
             _rb.isKinematic = true;
+            if(HasTimeBonus) OnTimeBonusAcquired?.Invoke(TimeBonusInSeconds);
             var tilePos = GetCurrentTilePos();
             transform.position = tilePos;
             transform.DOMove(transform.position + direction * _exitDistance, _exitDuration)
