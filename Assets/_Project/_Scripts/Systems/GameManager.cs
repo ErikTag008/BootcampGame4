@@ -124,6 +124,7 @@ namespace Project.Assets._Project._Scripts.Systems
         {
             _blocks.Add(block);
             block.OnExit += OnBlockExited;
+            block.OnTimeBonusAcquired += _timerManager.AddTime;
         }
 
         private void UnsubscribeFromEvents()
@@ -180,6 +181,13 @@ namespace Project.Assets._Project._Scripts.Systems
             _hintManager.OnAnyBlockInteracted();
             _uiManager.ToggleHintArrow(false);
             _showingHintArrow = false;
+            foreach(var block in _blocks)
+            {
+                if(block != null && block.gameObject.activeInHierarchy && !block.HasExited && block.HasMoveDelay)
+                {
+                    block.DepleteMoveDelay();
+                }
+            }
             _audioService.Play(_audioData.CorrectInteractionClip, _audioData.CorrectInteractionVolume, UnityEngine.Random.Range(0.95f, 1.05f));
             if (_hasWon) return;
             if (_isTutorial && _remainingTutorialHintAmount > 0)

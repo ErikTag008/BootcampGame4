@@ -6,6 +6,7 @@ using Project.Assets._Project._Scripts.GridComponents;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 
 namespace Project.Assets._Project._Scripts.Interactables
@@ -36,15 +37,17 @@ namespace Project.Assets._Project._Scripts.Interactables
         private bool _isMerged = false;
         private bool _isMerging = false;
         public event Action OnExit;
-        public event Action<UnitColor, BlockType, Vector3, Quaternion> OnMerge; 
+        public event Action<UnitColor, BlockType, Vector3, Quaternion, int> OnMerge; 
         public bool HasExited => _hasExited;
         [field: SerializeField] public bool HasTimeBonus { get; private set; } = false;
         [field: SerializeField, ShowIf.ShowIf(nameof(HasTimeBonus), true)] public int TimeBonusInSeconds { get; private set; } = 5;
-        public Action<int> OnTimeBonusAcquired;
+        public event Action<int> OnTimeBonusAcquired;
+        [SerializeField, ShowIf.ShowIf(nameof(HasTimeBonus), true)] private TMP_Text _timeBonusText;
         [field: SerializeField] public bool HasMoveDelay { get; private set; } = false;
         [field: SerializeField, ShowIf.ShowIf(nameof(HasMoveDelay), true)] public int MoveDelay { get; private set; } = 5;
-        private int _currentMoveDelay;
-
+        [SerializeField, ShowIf.ShowIf(nameof(HasMoveDelay), true)] private int _currentMoveDelay;
+        [SerializeField, ShowIf.ShowIf(nameof(HasMoveDelay), true)] private TMP_Text _moveDelayText;
+        private bool _canMove = true;
         [field: SerializeField] public bool IsMergable { get; private set; } = false;
         [field: SerializeField, ShowIf.ShowIf(nameof(IsMergable), true)] public BlockType Type { get; private set; } = BlockType.OneByOne;
         [SerializeField, ShowIf.ShowIf(nameof(IsMergable), true)] private Ease _mergeEase = Ease.InOutCubic;
@@ -60,6 +63,9 @@ namespace Project.Assets._Project._Scripts.Interactables
             ToggleOutLine(false);
             _rb.isKinematic = true;
             _currentMoveDelay = MoveDelay;
+            _timeBonusText.text = HasTimeBonus ? $"+{TimeBonusInSeconds}s" : string.Empty;
+            _moveDelayText.text = HasMoveDelay ? _currentMoveDelay.ToString() : string.Empty;
+            _canMove = !HasMoveDelay || _currentMoveDelay <= 0;
         }
         public void ManagedFixedUpdate()
         {
@@ -98,16 +104,40 @@ namespace Project.Assets._Project._Scripts.Interactables
                         return;
                     }
 
+                    var timeBonus = GetTimeBonus(otherBlock);
+
                     DOTween.Sequence()
                         .Join(otherBlock.GetMerged(snappedOtherTarget, _mergeDuration))
                         .Join(GetMerged(snappedThisTarget + Vector3.one * 0.01f, _mergeDuration))
                         .AppendCallback(() =>
                         {
                             // Notify spawn position as snapped (tile normalized)
-                            OnMerge?.Invoke(mergedResultColor, otherBlock.Type, snappedThisTarget, transform.rotation);
+                            OnMerge?.Invoke(mergedResultColor, otherBlock.Type, snappedThisTarget, transform.rotation, timeBonus);
                         });
                 }
             }
+        }
+
+        private int GetTimeBonus(Block otherBlock)
+        {
+            int timeBonus;
+            if (HasTimeBonus && otherBlock.HasTimeBonus)
+            {
+                timeBonus = TimeBonusInSeconds + otherBlock.TimeBonusInSeconds;
+            }
+            else if (HasTimeBonus)
+            {
+                timeBonus = TimeBonusInSeconds;
+            }
+            else if (otherBlock.HasTimeBonus)
+            {
+                timeBonus = otherBlock.TimeBonusInSeconds;
+            }
+            else
+            {
+                timeBonus = 0;
+            }
+            return timeBonus;
         }
 
         private bool IsPathEmpty(Vector3 direction, float distance, Bounds bounds, Block thisBlock, Block otherBlock)
@@ -142,6 +172,13 @@ namespace Project.Assets._Project._Scripts.Interactables
             return true;
         }
 
+        public void SetTimeBonusOnMerge(int timeBonus)
+        {
+            HasTimeBonus = true;
+            TimeBonusInSeconds = timeBonus;
+            _timeBonusText.text = HasTimeBonus ? $"+{TimeBonusInSeconds}s" : string.Empty;
+        }
+
         private void OnCollisionStay(Collision collision)
         {
             CheckMergeCollision(collision);
@@ -161,7 +198,9 @@ namespace Project.Assets._Project._Scripts.Interactables
         public void DepleteMoveDelay()
         {
             if (!HasMoveDelay) return;
-            
+            _currentMoveDelay--;
+            _canMove = _currentMoveDelay <= 0;
+            _moveDelayText.text = _currentMoveDelay <= 0 ? string.Empty : _currentMoveDelay.ToString();
         }
 
         private void CheckExitCollision(Collider collider)
@@ -277,7 +316,7 @@ namespace Project.Assets._Project._Scripts.Interactables
 
         public void StartDrag(Vector3 offset)
         {
-            if (_hasExited) return;
+            if (_hasExited || !_canMove) return;
             offset.y = 0f;
             _offset = offset;
             _isGettingDragged = true;

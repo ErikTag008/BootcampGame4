@@ -20,13 +20,18 @@ namespace Project.Assets._Project._Scripts.Systems
         {
             _blocks.ForEach(block => block.OnMerge -= HandleMerge);
         }
-        private void HandleMerge(UnitColor color, BlockType type, Vector3 pos, Quaternion rotation)
+        private void HandleMerge(UnitColor color, BlockType type, Vector3 pos, Quaternion rotation, int timeBonus)
         {
+
             foreach(var  blockPrefab in _mergedBlockPrefabs)
             {
                 if(blockPrefab.Type == type && blockPrefab.Color == color)
                 {
                     var mergedBlock = Instantiate(blockPrefab, pos, rotation);
+                    if(timeBonus >= 0)
+                    {
+                        mergedBlock.SetTimeBonusOnMerge(timeBonus);
+                    }
                     OnBlockCreated?.Invoke(mergedBlock);
                     break;
                 }
