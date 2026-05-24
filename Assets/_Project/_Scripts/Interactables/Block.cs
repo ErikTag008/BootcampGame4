@@ -57,12 +57,14 @@ namespace Project.Assets._Project._Scripts.Interactables
         private Vector3? _targetPosition;
         private bool _isGettingDragged = false;
         private Tween _posLockInTween;
+        private float _startingYPosition;
         private void Awake()
         {
             UpdateBounds();
             ToggleOutLine(false);
             _rb.isKinematic = true;
             _currentMoveDelay = MoveDelay;
+            _startingYPosition = transform.position.y;
             _timeBonusText.text = HasTimeBonus ? $"+{TimeBonusInSeconds}s" : string.Empty;
             _moveDelayText.text = HasMoveDelay ? _currentMoveDelay.ToString() : string.Empty;
             _canMove = !HasMoveDelay || _currentMoveDelay <= 0;
@@ -176,7 +178,15 @@ namespace Project.Assets._Project._Scripts.Interactables
         {
             HasTimeBonus = true;
             TimeBonusInSeconds = timeBonus;
-            _timeBonusText.text = HasTimeBonus ? $"+{TimeBonusInSeconds}s" : string.Empty;
+            if (TimeBonusInSeconds <= 0)
+            {
+                _timeBonusText.text = string.Empty;
+            }
+            else 
+            { 
+                _timeBonusText.text = $"+{TimeBonusInSeconds}s";
+            }
+
         }
 
         private void OnCollisionStay(Collision collision)
@@ -317,7 +327,7 @@ namespace Project.Assets._Project._Scripts.Interactables
         public void StartDrag(Vector3 offset)
         {
             if (_hasExited || !_canMove) return;
-            offset.y = 0f;
+            offset.y = _startingYPosition;
             _offset = offset;
             _isGettingDragged = true;
             _posLockInTween?.Complete();
@@ -355,7 +365,7 @@ namespace Project.Assets._Project._Scripts.Interactables
             {
                 finalPos = hitInfo.transform.position;
             }
-            finalPos.y = 0f;
+            finalPos.y = _startingYPosition;
             return finalPos;
         }
 
@@ -365,14 +375,14 @@ namespace Project.Assets._Project._Scripts.Interactables
             if (Physics.Raycast(origin, Vector3.down, out var hit, 10f, _tileLayer))
             {
                 Vector3 tilePos = hit.transform.position;
-                tilePos.y = 0f;
+                tilePos.y = _startingYPosition;
                 return tilePos;
             }
             // fallback: snap to nearest integer grid
             Vector3 fallback = pos;
             fallback.x = Mathf.Round(fallback.x);
             fallback.z = Mathf.Round(fallback.z);
-            fallback.y = 0f;
+            fallback.y = _startingYPosition;
             return fallback;
         }
 

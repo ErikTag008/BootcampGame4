@@ -1,8 +1,9 @@
 using KBCore.Refs;
 using Unity.Cinemachine;
+#if UNITY_EDITOR
 using UnityEditor.SceneManagement;
+#endif
 using UnityEngine;
-using UnityEngine.Tilemaps;
 
 namespace Project.Assets._Project._Scripts.GridComponents
 {

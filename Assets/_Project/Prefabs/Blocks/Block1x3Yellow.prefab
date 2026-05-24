@@ -86,7 +86,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6263191870250796032, guid: 75225ece5a0e8a341a05851a07e89abe, type: 3}
       propertyPath: m_LocalScale.z
-      value: 3
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6263191870250796032, guid: 75225ece5a0e8a341a05851a07e89abe, type: 3}
       propertyPath: m_LocalPosition.x
@@ -104,6 +104,10 @@ PrefabInstance:
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: e855d6c20c66a344e9afe66366f75c36, type: 2}
+    - target: {fileID: 8417011150613045873, guid: 75225ece5a0e8a341a05851a07e89abe, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: -5495902117074765545, guid: 853d67a0bbd772d4f86b943ef3e4a96b, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
