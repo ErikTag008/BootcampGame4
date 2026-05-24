@@ -1737,6 +1737,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Background
       objectReference: {fileID: 0}
+    - target: {fileID: 5062996666627572358, guid: d5ff1c206e89641429608122059fc360, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 926233ec69662a4469ba9d88406ddd3c, type: 2}
     - target: {fileID: 7920337170704058418, guid: d5ff1c206e89641429608122059fc360, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0

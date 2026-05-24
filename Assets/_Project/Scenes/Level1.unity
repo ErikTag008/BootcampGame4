@@ -3271,28 +3271,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2091aecdbe3e3024aa1940268412cb4d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: ProjectAssembly::Project.Tile
---- !u!114 &591214721 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 7326922555534228222, guid: c19ce2662b390b4438644cf0644796ab, type: 3}
-  m_PrefabInstance: {fileID: 1713108447}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 68bb026fafb42b14791938953eaace77, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.Cinemachine::Unity.Cinemachine.CinemachineBasicMultiChannelPerlin
---- !u!114 &591214724 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 8180457034856401308, guid: c19ce2662b390b4438644cf0644796ab, type: 3}
-  m_PrefabInstance: {fileID: 1713108447}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f9dfa5b682dcd46bda6128250e975f58, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.Cinemachine::Unity.Cinemachine.CinemachineCamera
 --- !u!1 &591357307
 GameObject:
   m_ObjectHideFlags: 0
@@ -8325,12 +8303,16 @@ PrefabInstance:
       value: =====RENDERING=====
       objectReference: {fileID: 0}
     - target: {fileID: 6810480735208914593, guid: c19ce2662b390b4438644cf0644796ab, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 6810480735208914593, guid: c19ce2662b390b4438644cf0644796ab, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 11.790507
+      value: 9.77
       objectReference: {fileID: 0}
     - target: {fileID: 6810480735208914593, guid: c19ce2662b390b4438644cf0644796ab, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -3.9999998
+      value: -2.85
       objectReference: {fileID: 0}
     - target: {fileID: 6810480735208914593, guid: c19ce2662b390b4438644cf0644796ab, type: 3}
       propertyPath: m_LocalRotation.w
@@ -8341,35 +8323,48 @@ PrefabInstance:
       value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 6810480735208914593, guid: c19ce2662b390b4438644cf0644796ab, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6810480735208914593, guid: c19ce2662b390b4438644cf0644796ab, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6810480735208914593, guid: c19ce2662b390b4438644cf0644796ab, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: 55
+      value: 60
       objectReference: {fileID: 0}
     - target: {fileID: 8180457034856401308, guid: c19ce2662b390b4438644cf0644796ab, type: 3}
       propertyPath: Target.TrackingTarget
       value: 
       objectReference: {fileID: 1816235114}
     - target: {fileID: 8929767834752039599, guid: c19ce2662b390b4438644cf0644796ab, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 8929767834752039599, guid: c19ce2662b390b4438644cf0644796ab, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 11.790507
+      value: 10.853043
       objectReference: {fileID: 0}
     - target: {fileID: 8929767834752039599, guid: c19ce2662b390b4438644cf0644796ab, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -3.9999998
+      value: -5.471528
       objectReference: {fileID: 0}
     - target: {fileID: 8929767834752039599, guid: c19ce2662b390b4438644cf0644796ab, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.8660254
+      value: 0.8870109
       objectReference: {fileID: 0}
     - target: {fileID: 8929767834752039599, guid: c19ce2662b390b4438644cf0644796ab, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.5
+      value: 0.46174863
       objectReference: {fileID: 0}
     - target: {fileID: 8929767834752039599, guid: c19ce2662b390b4438644cf0644796ab, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: 60
+      value: 55
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 3057896785836776050, guid: c19ce2662b390b4438644cf0644796ab, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c19ce2662b390b4438644cf0644796ab, type: 3}
@@ -8865,7 +8860,7 @@ PrefabInstance:
     - target: {fileID: 1297070142197420478, guid: 6918a9d40b998ca4eabbd05eebb28eed, type: 3}
       propertyPath: _cinemachineCam
       value: 
-      objectReference: {fileID: 591214724}
+      objectReference: {fileID: 0}
     - target: {fileID: 1898045534463543752, guid: 6918a9d40b998ca4eabbd05eebb28eed, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0
@@ -9510,7 +9505,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 926233ec69662a4469ba9d88406ddd3c, type: 2}
+  - {fileID: 2100000, guid: ec9a43fcc0e6fdf489cb625ea1c89a0a, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -9948,8 +9943,8 @@ MonoBehaviour:
   _mergeManager: {fileID: 197645762}
   _gridGenerator: {fileID: 634593740}
   _camera: {fileID: 1893139778}
-  _cinemachineCam: {fileID: 591214724}
-  _cinemachineShakeComponent: {fileID: 591214721}
+  _cinemachineCam: {fileID: 0}
+  _cinemachineShakeComponent: {fileID: 0}
   _coreUIElements: {fileID: 942271784}
   _gameUIElements: {fileID: 230408271}
   _allButtons:
