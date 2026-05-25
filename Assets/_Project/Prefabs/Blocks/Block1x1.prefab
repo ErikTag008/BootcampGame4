@@ -10,15 +10,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 397391628479898831, guid: 75225ece5a0e8a341a05851a07e89abe, type: 3}
       propertyPath: m_Name
-      value: Block1x1Red
+      value: Block1x1
       objectReference: {fileID: 0}
     - target: {fileID: 592987627794175172, guid: 75225ece5a0e8a341a05851a07e89abe, type: 3}
       propertyPath: _color
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 592987627794175172, guid: 75225ece5a0e8a341a05851a07e89abe, type: 3}
-      propertyPath: _exitDistance
-      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 3476637084762227628, guid: 75225ece5a0e8a341a05851a07e89abe, type: 3}
       propertyPath: m_Size.x

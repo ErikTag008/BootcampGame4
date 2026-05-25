@@ -14,8 +14,8 @@ namespace Project.Assets._Project._Scripts.Interactables
     [RequireComponent(typeof(Rigidbody))]
     public class Block : ValidatedManagedBehaviour, IDragable, IFixedUpdatable
     {
+        [Header("General Settings")]
         [SerializeField] private UnitColor _color;
-        public UnitColor Color => _color;
         [SerializeField, Self] private Rigidbody _rb;
         [SerializeField, Self] private Collider[] _colliders;
         [SerializeField, Child] private MeshRenderer[] _renderers;
@@ -29,24 +29,20 @@ namespace Project.Assets._Project._Scripts.Interactables
         [SerializeField] private Ease _posLockInEase = Ease.OutCubic;
         [SerializeField] private float _exitDuration = 0.3f;
         [SerializeField] private float _exitDistance = 2.0f;
-        [SerializeField] private Ease _exitEase = Ease.InOutCubic;
+        [SerializeField] private float _exitFallDistance = -3f;
+        [SerializeField] private float _exitFallDuration = 0.5f;
+        [SerializeField] private Ease _exitFallEase = Ease.OutCubic;
+        [SerializeField] private Ease _exitEase = Ease.InCubic;
         
-        private bool _canExit = true;
-        private bool _hasExited = false;
-        private bool _isMerged = false;
-        private bool _isMerging = false;
-        public event Action OnExit;
-        public event Action<UnitColor, BlockType, Vector3, Quaternion, int> OnMerge; 
-        public bool HasExited => _hasExited;
+        
+        [field: Header("Feature Settings")]
         [field: SerializeField] public bool HasTimeBonus { get; private set; } = false;
         [field: SerializeField, ShowIf.ShowIf(nameof(HasTimeBonus), true)] public int TimeBonusInSeconds { get; private set; } = 5;
-        public event Action<int> OnTimeBonusAcquired;
         [SerializeField, ShowIf.ShowIf(nameof(HasTimeBonus), true)] private TMP_Text _timeBonusText;
         [field: SerializeField] public bool HasMoveDelay { get; private set; } = false;
         [field: SerializeField, ShowIf.ShowIf(nameof(HasMoveDelay), true)] public int MoveDelay { get; private set; } = 5;
         [SerializeField, ShowIf.ShowIf(nameof(HasMoveDelay), true)] private int _currentMoveDelay;
         [SerializeField, ShowIf.ShowIf(nameof(HasMoveDelay), true)] private TMP_Text _moveDelayText;
-        private bool _canMove = true;
         [field: SerializeField] public bool IsMergable { get; private set; } = false;
         [field: SerializeField, ShowIf.ShowIf(nameof(IsMergable), true)] public BlockType Type { get; private set; } = BlockType.OneByOne;
         [SerializeField, ShowIf.ShowIf(nameof(IsMergable), true)] private Ease _mergeEase = Ease.InOutCubic;
@@ -57,8 +53,18 @@ namespace Project.Assets._Project._Scripts.Interactables
         private bool _isGettingDragged = false;
         private Tween _posLockInTween;
         private float _startingYPosition;
-        public event Action<Block, UnitColor> OnColorChanged;
         private UnitColor _lastColor;
+        public bool HasExited => _hasExited;
+        public UnitColor Color => _color;
+        private bool _canExit = true;
+        private bool _hasExited = false;
+        private bool _isMerged = false;
+        private bool _isMerging = false;
+        private bool _canMove = true;
+        public event Action<Block, UnitColor> OnColorChanged;
+        public event Action<UnitColor, BlockType, Vector3, Quaternion, int> OnMerge; 
+        public event Action OnExit;
+        public event Action<int> OnTimeBonusAcquired;
         private void Awake()
         {
             UpdateBounds();
@@ -313,11 +319,20 @@ namespace Project.Assets._Project._Scripts.Interactables
         {
             _rb.linearVelocity = Vector3.zero;
             _rb.isKinematic = true;
-            if(HasTimeBonus) OnTimeBonusAcquired?.Invoke(TimeBonusInSeconds);
+            if (HasTimeBonus) OnTimeBonusAcquired?.Invoke(TimeBonusInSeconds);
+
             var tilePos = GetCurrentTilePos();
             transform.position = tilePos;
-            transform.DOMove(transform.position + direction * _exitDistance, _exitDuration)
-                .SetEase(_exitEase);
+
+            var addedDistance = direction.x >= 0.1f || direction.x <= -0.1f ? _bounds.size.x * Mathf.Sign(direction.x) * Vector3.right : _bounds.size.z * Mathf.Sign(direction.z) * Vector3.forward;
+            Vector3 startPos = transform.position;
+            Vector3 firstTarget = startPos + direction * _exitDistance + addedDistance;
+            Vector3 secondTarget = firstTarget + _exitDistance * 0.5f * direction + Vector3.up * _exitFallDistance;
+
+            DOTween.Sequence()
+                .Append(transform.DOMove(firstTarget, _exitDuration).SetEase(_exitEase))
+                .Append(transform.DOMove(secondTarget, _exitFallDuration).SetEase(_exitFallEase))
+                .AppendCallback(() => print("Landed"));
         }
 
         private void ToggleOutLine(bool isOn)

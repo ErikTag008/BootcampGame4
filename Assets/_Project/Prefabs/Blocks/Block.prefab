@@ -98,8 +98,11 @@ MonoBehaviour:
   _posLockInDuration: 0.1
   _posLockInEase: 9
   _exitDuration: 0.3
-  _exitDistance: 5
-  _exitEase: 10
+  _exitDistance: 3
+  _exitFallDistance: -2
+  _exitFallDuration: 0.5
+  _exitFallEase: 9
+  _exitEase: 8
   <HasTimeBonus>k__BackingField: 0
   <TimeBonusInSeconds>k__BackingField: 5
   _timeBonusText: {fileID: 3139115708649194832}
