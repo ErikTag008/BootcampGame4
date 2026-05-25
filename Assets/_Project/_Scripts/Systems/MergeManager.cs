@@ -9,6 +9,7 @@ namespace Project.Assets._Project._Scripts.Systems
     public class MergeManager : MonoBehaviour
     {
         [Inject] private readonly List<Block> _blocks;
+        [Inject] private readonly BlockColorChanger _blockColorChanger;
         [SerializeField] private List<Block> _mergedBlockPrefabs;
         public event Action<Block> OnBlockCreated;
 
@@ -22,16 +23,16 @@ namespace Project.Assets._Project._Scripts.Systems
         }
         private void HandleMerge(UnitColor color, BlockType type, Vector3 pos, Quaternion rotation, int timeBonus)
         {
-
-            foreach(var  blockPrefab in _mergedBlockPrefabs)
+            foreach(var blockPrefab in _mergedBlockPrefabs)
             {
-                if(blockPrefab.Type == type && blockPrefab.Color == color)
+                if(blockPrefab.Type == type)
                 {
                     var mergedBlock = Instantiate(blockPrefab, pos, rotation);
                     if(timeBonus >= 0)
                     {
                         mergedBlock.SetTimeBonusOnMerge(timeBonus);
                     }
+                    _blockColorChanger.ChangeBlockColor(mergedBlock, color);
                     OnBlockCreated?.Invoke(mergedBlock);
                     break;
                 }

@@ -18,6 +18,7 @@ namespace Project.Assets._Project._Scripts.Systems
         [Inject] private readonly IAudioService _audioService;
         [Inject] private readonly TimerManager _timerManager;
         [Inject] private readonly MergeManager _mergeManager;
+        [Inject] private readonly BlockColorChanger _blockColorChanger;
         [Inject] private readonly PlayerPrefsData _playerPrefsData;
         //[Inject] private readonly List<MovableBlock> _blocks;
         [Inject] private readonly List<Button> _allButtons;
@@ -115,7 +116,7 @@ namespace Project.Assets._Project._Scripts.Systems
             _timerManager.OnTimeEnded += LoseLevel;
             _mergeManager.OnBlockCreated += RegisterBlock;
             _hintManager.OnCurrentHintAmountChanged += _uiManager.SetNumberOfHints;
-            _blocks.ForEach(block => { block.OnExit += OnBlockExited; block.OnTimeBonusAcquired += _timerManager.AddTime; });
+            _blocks.ForEach(block => { block.OnExit += OnBlockExited; block.OnTimeBonusAcquired += _timerManager.AddTime;});
             
             _allButtons.ForEach(button => button.onClick.AddListener(() => _audioService.Play(_audioData.AnyButtonClip, _audioData.AnyButtonVolume)));
         }

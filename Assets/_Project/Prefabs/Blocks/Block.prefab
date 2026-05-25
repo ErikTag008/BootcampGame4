@@ -93,8 +93,8 @@ MonoBehaviour:
   _obstacleForMergeLayer:
     serializedVersion: 2
     m_Bits: 65
-  _moveSpeed: 7.5
-  _maxSpeed: 20
+  _moveSpeed: 15
+  _maxSpeed: 30
   _posLockInDuration: 0.1
   _posLockInEase: 9
   _exitDuration: 0.3

@@ -1,8 +1,8 @@
 using DG.Tweening;
-using EasyTextEffects.Editor.MyBoxCopy.Extensions;
 using Gilzoide.UpdateManager;
 using KBCore.Refs;
 using Project.Assets._Project._Scripts.GridComponents;
+using Project.Assets._Project._Scripts.Systems;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,7 +31,6 @@ namespace Project.Assets._Project._Scripts.Interactables
         [SerializeField] private float _exitDistance = 2.0f;
         [SerializeField] private Ease _exitEase = Ease.InOutCubic;
         
-        
         private bool _canExit = true;
         private bool _hasExited = false;
         private bool _isMerged = false;
@@ -58,6 +57,8 @@ namespace Project.Assets._Project._Scripts.Interactables
         private bool _isGettingDragged = false;
         private Tween _posLockInTween;
         private float _startingYPosition;
+        public event Action<Block, UnitColor> OnColorChanged;
+        private UnitColor _lastColor;
         private void Awake()
         {
             UpdateBounds();
@@ -69,6 +70,45 @@ namespace Project.Assets._Project._Scripts.Interactables
             _moveDelayText.text = HasMoveDelay ? _currentMoveDelay.ToString() : string.Empty;
             _canMove = !HasMoveDelay || _currentMoveDelay <= 0;
         }
+
+        protected override void OnValidate()
+        {
+            base.OnValidate();
+            if (_lastColor != _color)
+            {
+                _lastColor = _color;
+#if UNITY_EDITOR
+                BlockColorChanger colorChanger = FindAnyObjectByType<BlockColorChanger>();
+                colorChanger.ChangeBlockColor(this, _color);
+#endif
+            }
+        }
+
+
+        public void ChangeColor(UnitColor newColor)
+        {
+            if (_color == newColor) return;
+            _color = newColor;
+            OnColorChanged?.Invoke(this, _color);
+        }
+        public void ChangeMaterial(Material material)
+        {
+            _renderers ??= GetComponentsInChildren<MeshRenderer>();
+            foreach(var rend in _renderers)
+            {
+                rend.material = material;
+            }
+        }
+
+        public void SetFeatures(bool isMergable, bool hasTimeBonus, bool hasMoveDelay)
+        {
+            IsMergable = isMergable;
+            HasTimeBonus = hasTimeBonus;
+            HasMoveDelay = hasMoveDelay;
+            _timeBonusText.gameObject.SetActive(hasTimeBonus);
+            _moveDelayText.gameObject.SetActive(hasMoveDelay);
+        }
+
         public void ManagedFixedUpdate()
         {
             GoTowardsTargetPosition();

@@ -21,6 +21,7 @@ namespace Project.Assets._Project._Scripts.DI
         [SerializeField, Scene] private LevelManager _levelManager;
         [SerializeField, Scene] private HintManager _hintManager;
         [SerializeField, Scene] private TimerManager _timerManager;
+        [SerializeField, Scene] private BlockColorChanger _blockColorChanger;
         [SerializeField, Scene] private AudioManager _audioManager;
         [SerializeField, Scene] private MergeManager _mergeManager;
         [SerializeField, Scene] private GridGenerator _gridGenerator;
@@ -50,6 +51,7 @@ namespace Project.Assets._Project._Scripts.DI
             builder.AddSingleton(_hintManager);
             builder.AddSingleton(_mergeManager);
             builder.AddSingleton(_uiManager);
+            builder.AddSingleton(_blockColorChanger);
             builder.AddSingleton(_timerManager);
             builder.AddSingleton(_gridGenerator);
             builder.AddSingleton(_audioManager, typeof(IAudioService));
