@@ -10,6 +10,10 @@ namespace Project.Assets._Project._Scripts.Systems
         [field: Space(2)]
         [field: SerializeField] public AudioClip CorrectInteractionClip { get; private set; }
         [field: SerializeField] public float CorrectInteractionVolume { get; private set; }
+
+        [field: Space(2)]
+        [field: SerializeField] public AudioClip BlockInteractionClip { get; private set; }
+        [field: SerializeField] public float BlockInteractionVolume { get; private set; }
         [field: Space(2)]
         [field: SerializeField] public AudioClip LevelWinClip { get; private set; }
         [field: SerializeField] public float LevelWinVolume { get; private set; }

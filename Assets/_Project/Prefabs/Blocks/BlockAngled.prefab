@@ -100,8 +100,12 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 397391628479898831, guid: 75225ece5a0e8a341a05851a07e89abe, type: 3}
       propertyPath: m_Name
-      value: BlockAngledRed
+      value: BlockAngled
       objectReference: {fileID: 0}
+    - target: {fileID: 592987627794175172, guid: 75225ece5a0e8a341a05851a07e89abe, type: 3}
+      propertyPath: _model
+      value: 
+      objectReference: {fileID: 8836993150904302177}
     - target: {fileID: 592987627794175172, guid: 75225ece5a0e8a341a05851a07e89abe, type: 3}
       propertyPath: <Type>k__BackingField
       value: 4

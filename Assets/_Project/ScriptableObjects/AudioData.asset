@@ -16,9 +16,11 @@ MonoBehaviour:
   <WrongInteractionVolume>k__BackingField: 1
   <CorrectInteractionClip>k__BackingField: {fileID: 8300000, guid: 308df317f16f49b4f963fe0a325ef44e, type: 3}
   <CorrectInteractionVolume>k__BackingField: 1
+  <BlockInteractionClip>k__BackingField: {fileID: 8300000, guid: 68000a34a700ab040a019bdbb5f98375, type: 3}
+  <BlockInteractionVolume>k__BackingField: 0.5
   <LevelWinClip>k__BackingField: {fileID: 8300000, guid: d8d842f6a2da9d14f9db7dd691090718, type: 3}
-  <LevelWinVolume>k__BackingField: 0.5
+  <LevelWinVolume>k__BackingField: 0.3
   <LevelLoseClip>k__BackingField: {fileID: 8300000, guid: 0d273e0e64c33ca4bae14c5de7751654, type: 3}
-  <LevelLoseVolume>k__BackingField: 0.8
+  <LevelLoseVolume>k__BackingField: 0.2
   <AnyButtonClip>k__BackingField: {fileID: 8300000, guid: e5c50abcd4871094a9830e58fcd6a481, type: 3}
   <AnyButtonVolume>k__BackingField: 0.5

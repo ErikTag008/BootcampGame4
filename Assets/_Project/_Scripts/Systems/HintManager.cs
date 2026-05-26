@@ -1,7 +1,5 @@
-using Project.Assets._Project._Scripts.Interactables;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 namespace Project.Assets._Project._Scripts.Systems

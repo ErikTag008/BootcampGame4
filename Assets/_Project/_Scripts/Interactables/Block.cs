@@ -19,6 +19,7 @@ namespace Project.Assets._Project._Scripts.Interactables
         [SerializeField, Self] private Rigidbody _rb;
         [SerializeField, Self] private Collider[] _colliders;
         [SerializeField, Child] private MeshRenderer[] _renderers;
+        [SerializeField] private Transform _model;
         [SerializeField] private RenderingLayerMask _noOutlineLayer;
         [SerializeField] private RenderingLayerMask _outlinedLayer;
         [SerializeField] private LayerMask _tileLayer;
@@ -33,6 +34,9 @@ namespace Project.Assets._Project._Scripts.Interactables
         [SerializeField] private float _exitFallDuration = 0.5f;
         [SerializeField] private Ease _exitFallEase = Ease.OutCubic;
         [SerializeField] private Ease _exitEase = Ease.InCubic;
+        [SerializeField] private float _mergeShakeMagnitude = 0.2f;
+        [SerializeField] private int _mergeShakeLoops = 4;
+        [SerializeField] private ParticleSystem _fallThroughWaterVFX;
         
         
         [field: Header("Feature Settings")]
@@ -65,6 +69,8 @@ namespace Project.Assets._Project._Scripts.Interactables
         public event Action<UnitColor, BlockType, Vector3, Quaternion, int> OnMerge; 
         public event Action OnExit;
         public event Action<int> OnTimeBonusAcquired;
+        public event Action OnWaterHit;
+        public event Action<bool> OnDragToggle;
         private void Awake()
         {
             UpdateBounds();
@@ -132,19 +138,9 @@ namespace Project.Assets._Project._Scripts.Interactables
             {
                 if (!_isMerged && otherBlock.CanMerge(_bounds, _color, Type, out var mergedResultColor))
                 {
-                    Vector3 meetPoint = (_bounds.center + otherBlock._bounds.center) / 2f;
-                    Vector3 thisTarget = meetPoint - (_bounds.center - transform.position);
-                    Vector3 otherTarget = meetPoint - (otherBlock._bounds.center - otherBlock.transform.position);
-
-                    // Snap targets to tiles (normalized)
-                    Vector3 snappedThisTarget = SnapToTilePosition(thisTarget);
-                    Vector3 snappedOtherTarget = SnapToTilePosition(otherTarget);
-
-                    // Check path from this block center to snappedThisTarget and from other to snappedOtherTarget.
-                    Vector3 dirThis = snappedThisTarget - _bounds.center;
-                    float distThis = Mathf.Max(0f, dirThis.magnitude / 2 - 0.05f);
-                    Vector3 dirOther = snappedOtherTarget - otherBlock._bounds.center;
-                    float distOther = Mathf.Max(0f, dirOther.magnitude / 2 - 0.05f);
+                    Vector3 otherCenter = otherBlock._bounds.center;
+                    Vector3 dirThis = otherCenter - _bounds.center;
+                    float distThis = Mathf.Max(0f, dirThis.magnitude);
 
                     if (!IsPathEmpty(dirThis, distThis, _bounds, this, otherBlock))
                     {
@@ -152,15 +148,16 @@ namespace Project.Assets._Project._Scripts.Interactables
                         return;
                     }
 
+                    Vector3 otherPos = otherBlock.transform.position;
                     var timeBonus = GetTimeBonus(otherBlock);
 
                     DOTween.Sequence()
-                        .Join(otherBlock.GetMerged(snappedOtherTarget, _mergeDuration))
-                        .Join(GetMerged(snappedThisTarget + Vector3.one * 0.01f, _mergeDuration))
+                        .Join(otherBlock.GetMerged(otherPos, _mergeDuration, true))
+                        .Join(GetMerged(otherPos, _mergeDuration))
                         .AppendCallback(() =>
                         {
                             // Notify spawn position as snapped (tile normalized)
-                            OnMerge?.Invoke(mergedResultColor, otherBlock.Type, snappedThisTarget, transform.rotation, timeBonus);
+                            OnMerge?.Invoke(mergedResultColor, otherBlock.Type,otherPos, transform.rotation, timeBonus);
                         });
                 }
             }
@@ -243,6 +240,11 @@ namespace Project.Assets._Project._Scripts.Interactables
         private void OnTriggerEnter(Collider other)
         {
             CheckExitCollision(other);
+            if (other.CompareTag("Water"))
+            {
+                _fallThroughWaterVFX.Play();
+                OnWaterHit?.Invoke();
+            }
         }
 
         private void OnTriggerStay(Collider other)
@@ -302,17 +304,24 @@ namespace Project.Assets._Project._Scripts.Interactables
             return false;
         }
 
-        public Tween GetMerged(Vector3 pos, float duration)
+        public Tween GetMerged(Vector3 pos, float duration, bool mergeReceiver = false)
         {
             if(!IsMergable || _isMerging) return null;
             _isMerged = true;
             _isMerging = true;
             _rb.isKinematic = true;
-            return transform.DOMove(pos, duration).SetEase(_mergeEase).OnComplete(() =>
-            {
-                gameObject.SetActive(false);
-                _hasExited = true;
-            });
+            if (!mergeReceiver) _model.transform.position += Vector3.up * 0.1f;
+            Vector3 shakeDir = pos.x > transform.position.x - 0.2f || pos.x < transform.position.x + 0.2f ? Vector3.forward : Vector3.right;
+
+            return DOTween.Sequence()
+                .AppendCallback(() => { if (!mergeReceiver) { transform.DOMove(pos, duration).SetEase(_mergeEase); } })
+                .JoinCallback(() => _model.localPosition -= (mergeReceiver ? -1f : 1f) * _mergeShakeMagnitude * 0.5f * shakeDir)
+                .Join(_model.DOLocalMove(_model.localPosition + (mergeReceiver ? -1f : 1f) * _mergeShakeMagnitude * shakeDir, duration / _mergeShakeLoops).SetEase(_mergeEase).SetLoops(_mergeShakeLoops, LoopType.Yoyo))
+                .AppendCallback(() =>
+                    {
+                        gameObject.SetActive(false);
+                        _hasExited = true;
+                    });
         }
 
         private void ExitThrough(Vector3 direction)
@@ -332,7 +341,7 @@ namespace Project.Assets._Project._Scripts.Interactables
             DOTween.Sequence()
                 .Append(transform.DOMove(firstTarget, _exitDuration).SetEase(_exitEase))
                 .Append(transform.DOMove(secondTarget, _exitFallDuration).SetEase(_exitFallEase))
-                .AppendCallback(() => print("Landed"));
+                .AppendCallback(() => gameObject.SetActive(false));
         }
 
         private void ToggleOutLine(bool isOn)
@@ -389,6 +398,7 @@ namespace Project.Assets._Project._Scripts.Interactables
             _posLockInTween?.Kill();
             ToggleOutLine(true);
             _rb.isKinematic = false;
+            OnDragToggle?.Invoke(true);
             UpdateBounds();
         }
 
@@ -405,6 +415,7 @@ namespace Project.Assets._Project._Scripts.Interactables
             }
             _posLockInTween?.Complete();
             _posLockInTween?.Kill();
+            OnDragToggle?.Invoke(false);
             Vector3 finalPos = GetCurrentTilePos();
             _posLockInTween = transform.DOMove(finalPos, _posLockInDuration)
                 .SetEase(_posLockInEase);
@@ -426,8 +437,8 @@ namespace Project.Assets._Project._Scripts.Interactables
 
         private Vector3 SnapToTilePosition(Vector3 pos)
         {
-            Vector3 origin = pos + Vector3.up * 5f;
-            if (Physics.Raycast(origin, Vector3.down, out var hit, 10f, _tileLayer))
+            Vector3 origin = pos + Vector3.up * 2f;
+            if (Physics.Raycast(origin, Vector3.down, out var hit, 4f, _tileLayer))
             {
                 Vector3 tilePos = hit.transform.position;
                 tilePos.y = _startingYPosition;
@@ -435,8 +446,8 @@ namespace Project.Assets._Project._Scripts.Interactables
             }
             // fallback: snap to nearest integer grid
             Vector3 fallback = pos;
-            fallback.x = Mathf.Round(fallback.x);
-            fallback.z = Mathf.Round(fallback.z);
+            fallback.x = Mathf.Round(fallback.x) + 0.5f;
+            fallback.z = Mathf.Round(fallback.z) + 0.5f;
             fallback.y = _startingYPosition;
             return fallback;
         }

@@ -116,7 +116,13 @@ namespace Project.Assets._Project._Scripts.Systems
             _timerManager.OnTimeEnded += LoseLevel;
             _mergeManager.OnBlockCreated += RegisterBlock;
             _hintManager.OnCurrentHintAmountChanged += _uiManager.SetNumberOfHints;
-            _blocks.ForEach(block => { block.OnExit += OnBlockExited; block.OnTimeBonusAcquired += _timerManager.AddTime;});
+            _blocks.ForEach(block => 
+                {
+                    block.OnExit += OnBlockExited;
+                    block.OnTimeBonusAcquired += _timerManager.AddTime; 
+                    block.OnWaterHit += OnBlockWaterHit; 
+                    block.OnDragToggle += OnBlockDragToggle;
+                });
             
             _allButtons.ForEach(button => button.onClick.AddListener(() => _audioService.Play(_audioData.AnyButtonClip, _audioData.AnyButtonVolume)));
         }
@@ -126,6 +132,8 @@ namespace Project.Assets._Project._Scripts.Systems
             _blocks.Add(block);
             block.OnExit += OnBlockExited;
             block.OnTimeBonusAcquired += _timerManager.AddTime;
+            block.OnWaterHit += OnBlockWaterHit;
+            block.OnDragToggle += OnBlockDragToggle;
         }
 
         private void UnsubscribeFromEvents()
@@ -138,7 +146,26 @@ namespace Project.Assets._Project._Scripts.Systems
             _timerManager.OnTimeEnded -= LoseLevel;
             _mergeManager.OnBlockCreated -= RegisterBlock;
             _hintManager.OnCurrentHintAmountChanged -= _uiManager.SetNumberOfHints;
-            _blocks.ForEach(block => { block.OnExit -= OnBlockExited; block.OnTimeBonusAcquired -= _timerManager.AddTime; });
+            _blocks.ForEach(block => 
+                {
+                    block.OnExit -= OnBlockExited; 
+                    block.OnTimeBonusAcquired -= _timerManager.AddTime; 
+                    block.OnWaterHit -= OnBlockWaterHit;
+                    block.OnDragToggle -= OnBlockDragToggle;
+                });
+        }
+
+        private void OnBlockDragToggle(bool isDragging)
+        {
+            if (isDragging)
+            {
+                _audioService.Play(_audioData.BlockInteractionClip, _audioData.BlockInteractionVolume, 1.1f);
+            }
+            else
+            {
+                _audioService.Play(_audioData.BlockInteractionClip, _audioData.BlockInteractionVolume, 0.9f);
+
+            }
         }
         private void TryGetHint()
         {
@@ -189,7 +216,6 @@ namespace Project.Assets._Project._Scripts.Systems
                     block.DepleteMoveDelay();
                 }
             }
-            _audioService.Play(_audioData.CorrectInteractionClip, _audioData.CorrectInteractionVolume, UnityEngine.Random.Range(0.95f, 1.05f));
             if (_hasWon) return;
             if (_isTutorial && _remainingTutorialHintAmount > 0)
             {
@@ -203,6 +229,11 @@ namespace Project.Assets._Project._Scripts.Systems
             
             
 
+        }
+
+        private void OnBlockWaterHit()
+        {
+            _audioService.Play(_audioData.CorrectInteractionClip, _audioData.CorrectInteractionVolume);
         }
 
         private void CheckForWin()
