@@ -37,6 +37,8 @@ namespace Project.Assets._Project._Scripts.Interactables
         [SerializeField] private float _mergeShakeMagnitude = 0.2f;
         [SerializeField] private int _mergeShakeLoops = 4;
         [SerializeField] private ParticleSystem _fallThroughWaterVFX;
+        [SerializeField] private ParticleSystem _mergeVFX;
+
         
         
         [field: Header("Feature Settings")]
@@ -66,7 +68,8 @@ namespace Project.Assets._Project._Scripts.Interactables
         private bool _isMerging = false;
         private bool _canMove = true;
         public event Action<Block, UnitColor> OnColorChanged;
-        public event Action<UnitColor, BlockType, Vector3, Quaternion, int> OnMerge; 
+        public event Action<UnitColor, BlockType, Vector3, Quaternion, int> OnMerge;
+        public event Action OnMergeStart;
         public event Action OnExit;
         public event Action<int> OnTimeBonusAcquired;
         public event Action OnWaterHit;
@@ -147,10 +150,9 @@ namespace Project.Assets._Project._Scripts.Interactables
                         print("Path Is Not Empty");
                         return;
                     }
-
                     Vector3 otherPos = otherBlock.transform.position;
                     var timeBonus = GetTimeBonus(otherBlock);
-
+                    OnMergeStart?.Invoke(); 
                     DOTween.Sequence()
                         .Join(otherBlock.GetMerged(otherPos, _mergeDuration, true))
                         .Join(GetMerged(otherPos, _mergeDuration))
@@ -310,6 +312,7 @@ namespace Project.Assets._Project._Scripts.Interactables
             _isMerged = true;
             _isMerging = true;
             _rb.isKinematic = true;
+            _mergeVFX?.Play();
             if (!mergeReceiver) _model.transform.position += Vector3.up * 0.1f;
             Vector3 shakeDir = pos.x > transform.position.x - 0.2f || pos.x < transform.position.x + 0.2f ? Vector3.forward : Vector3.right;
 

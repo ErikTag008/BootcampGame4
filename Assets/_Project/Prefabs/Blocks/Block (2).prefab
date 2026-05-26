@@ -10,7 +10,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 397391628479898831, guid: 75225ece5a0e8a341a05851a07e89abe, type: 3}
       propertyPath: m_Name
-      value: BlockRed
+      value: Block (2)
       objectReference: {fileID: 0}
     - target: {fileID: 592987627794175172, guid: 75225ece5a0e8a341a05851a07e89abe, type: 3}
       propertyPath: <Type>k__BackingField
@@ -67,7 +67,7 @@ PrefabInstance:
     - target: {fileID: 8417011150613045873, guid: 75225ece5a0e8a341a05851a07e89abe, type: 3}
       propertyPath: m_Mesh
       value: 
-      objectReference: {fileID: -5495902117074765545, guid: 51ff91a8a79b8c846b7bbb6f5d335226, type: 3}
+      objectReference: {fileID: -8678823145569952518, guid: d012bf753466dc84eb4f28b6e526782e, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

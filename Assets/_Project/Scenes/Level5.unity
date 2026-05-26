@@ -10099,6 +10099,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5602492793696122938, guid: a1657b499e05ba047b765360752cb891, type: 3}
   m_PrefabInstance: {fileID: 1658445131}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1658445133 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 836653351772218855, guid: a1657b499e05ba047b765360752cb891, type: 3}
+  m_PrefabInstance: {fileID: 1658445131}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 60c0b87a44d647d4785809192be0b3af, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: ProjectAssembly::Project.Assets._Project._Scripts.Interactables.Block
 --- !u!1 &1659190227
 GameObject:
   m_ObjectHideFlags: 0
@@ -13316,7 +13327,7 @@ MonoBehaviour:
   - {fileID: 7261281527769625761}
   - {fileID: 7261281527769625762}
   _blocks:
-  - {fileID: 0}
+  - {fileID: 1658445133}
   - {fileID: 706616120}
 --- !u!114 &7261281527769625760 stripped
 MonoBehaviour:

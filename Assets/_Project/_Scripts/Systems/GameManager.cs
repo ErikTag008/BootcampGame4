@@ -122,6 +122,8 @@ namespace Project.Assets._Project._Scripts.Systems
                     block.OnTimeBonusAcquired += _timerManager.AddTime; 
                     block.OnWaterHit += OnBlockWaterHit; 
                     block.OnDragToggle += OnBlockDragToggle;
+                    block.OnMergeStart += OnMergeStart;
+
                 });
             
             _allButtons.ForEach(button => button.onClick.AddListener(() => _audioService.Play(_audioData.AnyButtonClip, _audioData.AnyButtonVolume)));
@@ -134,6 +136,8 @@ namespace Project.Assets._Project._Scripts.Systems
             block.OnTimeBonusAcquired += _timerManager.AddTime;
             block.OnWaterHit += OnBlockWaterHit;
             block.OnDragToggle += OnBlockDragToggle;
+            block.OnMergeStart += OnMergeStart;
+
         }
 
         private void UnsubscribeFromEvents()
@@ -152,7 +156,13 @@ namespace Project.Assets._Project._Scripts.Systems
                     block.OnTimeBonusAcquired -= _timerManager.AddTime; 
                     block.OnWaterHit -= OnBlockWaterHit;
                     block.OnDragToggle -= OnBlockDragToggle;
+                    block.OnMergeStart -= OnMergeStart;
                 });
+        }
+
+        private void OnMergeStart()
+        {
+            _audioService.Play(_audioData.BlockInteractionClip, _audioData.BlockInteractionVolume, 1f);
         }
 
         private void OnBlockDragToggle(bool isDragging)
