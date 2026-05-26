@@ -10029,6 +10029,17 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 10, y: 1, z: 1}
   m_Center: {x: 4.5, y: 0, z: 0}
+--- !u!114 &1644504761 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7567619135434211943, guid: 624580796f509ee4a9e80a3edfd58c99, type: 3}
+  m_PrefabInstance: {fileID: 196509048}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 60c0b87a44d647d4785809192be0b3af, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: ProjectAssembly::Project.Assets._Project._Scripts.Interactables.Block
 --- !u!1 &1668183138
 GameObject:
   m_ObjectHideFlags: 0
@@ -10720,6 +10731,17 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1755359991}
   m_Mesh: {fileID: 3461125516173036102, guid: b55dda4eb6c5b924ba273eec42026d08, type: 3}
+--- !u!114 &1771821354 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7567619135434211943, guid: 624580796f509ee4a9e80a3edfd58c99, type: 3}
+  m_PrefabInstance: {fileID: 279144707}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 60c0b87a44d647d4785809192be0b3af, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: ProjectAssembly::Project.Assets._Project._Scripts.Interactables.Block
 --- !u!1 &1828728152
 GameObject:
   m_ObjectHideFlags: 0
@@ -13494,8 +13516,8 @@ MonoBehaviour:
   - {fileID: 7261281527769625761}
   - {fileID: 7261281527769625762}
   _blocks:
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 1771821354}
+  - {fileID: 1644504761}
 --- !u!1001 &7193569781453954811
 PrefabInstance:
   m_ObjectHideFlags: 0
