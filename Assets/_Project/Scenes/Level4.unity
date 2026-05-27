@@ -5870,6 +5870,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1591897329}
     m_Modifications:
+    - target: {fileID: 2669726336281406038, guid: d5a3938ae2852764a91c059b9b23b052, type: 3}
+      propertyPath: m_Name
+      value: AngleWall
+      objectReference: {fileID: 0}
     - target: {fileID: 3334657524765733100, guid: d5a3938ae2852764a91c059b9b23b052, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.5
@@ -5909,10 +5913,6 @@ PrefabInstance:
     - target: {fileID: 3334657524765733100, guid: d5a3938ae2852764a91c059b9b23b052, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2669726336281406038, guid: d5a3938ae2852764a91c059b9b23b052, type: 3}
-      propertyPath: m_Name
-      value: AngleWall
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -6190,6 +6190,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1591897329}
     m_Modifications:
+    - target: {fileID: 2669726336281406038, guid: d5a3938ae2852764a91c059b9b23b052, type: 3}
+      propertyPath: m_Name
+      value: AngleWall_02
+      objectReference: {fileID: 0}
     - target: {fileID: 3334657524765733100, guid: d5a3938ae2852764a91c059b9b23b052, type: 3}
       propertyPath: m_LocalPosition.x
       value: 8.5
@@ -6229,10 +6233,6 @@ PrefabInstance:
     - target: {fileID: 3334657524765733100, guid: d5a3938ae2852764a91c059b9b23b052, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2669726336281406038, guid: d5a3938ae2852764a91c059b9b23b052, type: 3}
-      propertyPath: m_Name
-      value: AngleWall_02
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -6745,6 +6745,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1591897329}
     m_Modifications:
+    - target: {fileID: 2669726336281406038, guid: d5a3938ae2852764a91c059b9b23b052, type: 3}
+      propertyPath: m_Name
+      value: AngleWall_01
+      objectReference: {fileID: 0}
     - target: {fileID: 3334657524765733100, guid: d5a3938ae2852764a91c059b9b23b052, type: 3}
       propertyPath: m_LocalPosition.x
       value: 8.5
@@ -6784,10 +6788,6 @@ PrefabInstance:
     - target: {fileID: 3334657524765733100, guid: d5a3938ae2852764a91c059b9b23b052, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2669726336281406038, guid: d5a3938ae2852764a91c059b9b23b052, type: 3}
-      propertyPath: m_Name
-      value: AngleWall_01
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -7962,6 +7962,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1591897329}
     m_Modifications:
+    - target: {fileID: 2669726336281406038, guid: d5a3938ae2852764a91c059b9b23b052, type: 3}
+      propertyPath: m_Name
+      value: AngleWall_03
+      objectReference: {fileID: 0}
     - target: {fileID: 3334657524765733100, guid: d5a3938ae2852764a91c059b9b23b052, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.5
@@ -8001,10 +8005,6 @@ PrefabInstance:
     - target: {fileID: 3334657524765733100, guid: d5a3938ae2852764a91c059b9b23b052, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2669726336281406038, guid: d5a3938ae2852764a91c059b9b23b052, type: 3}
-      propertyPath: m_Name
-      value: AngleWall_03
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -13110,6 +13110,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 720003392583540066, guid: f9b384c456eb78541854165a369af269, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3754676360316102575, guid: f9b384c456eb78541854165a369af269, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0
