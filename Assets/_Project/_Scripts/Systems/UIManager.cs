@@ -2,7 +2,6 @@ using Project.Assets._Project._Scripts.UI;
 using Reflex.Attributes;
 using System;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace Project.Assets._Project._Scripts.Systems
@@ -28,7 +27,6 @@ namespace Project.Assets._Project._Scripts.Systems
             _coreUIElements?.PauseReloadButton?.onClick.AddListener(() => OnLevelReloadRequested?.Invoke());
             _coreUIElements?.PauseReturnButton?.onClick.AddListener(PauseReturnButton);
             _gameUIElements?.PauseButton?.onClick.AddListener(PauseButton);
-            _gameUIElements?.HintButton?.onClick.AddListener(() => OnHintRequested?.Invoke());
         }
         public Image GetLoadingCover()
         {
@@ -40,7 +38,6 @@ namespace Project.Assets._Project._Scripts.Systems
         private void PauseReturnButton()
         {
             _coreUIElements.HidePauseScreen();
-            ToggleHintButton(true);
             OnPauseRequested?.Invoke(false);
         }
 
@@ -56,7 +53,6 @@ namespace Project.Assets._Project._Scripts.Systems
         private void PauseButton()
         {
             _coreUIElements.ShowPauseScreen();
-            ToggleHintButton(false);
             OnPauseRequested?.Invoke(true);
         }
 
@@ -70,10 +66,6 @@ namespace Project.Assets._Project._Scripts.Systems
             _gameUIElements.ToggleLevelNumberImage(isActive);
         }   
 
-        public void ToggleHintButton(bool isActive)
-        {
-            _gameUIElements.ToggleHintButton(isActive);
-        }
 
         public void TogglePauseButton(bool isActive)
         {
@@ -85,17 +77,10 @@ namespace Project.Assets._Project._Scripts.Systems
             _gameUIElements.UpdateHintArrowPosition(cam, pos);
         }
 
-        public void SetNumberOfHints(int num)
-        {
-            if (num < 0) num = 0;
-            _gameUIElements.SetNumberOfHints(num);
-        }
-
 
         [ContextMenu("Lose")]
         public void OnLose()
         {
-            ToggleHintButton(false);
             TogglePauseButton(false);
             _coreUIElements.ShowLoseScreen();
         }
@@ -103,7 +88,6 @@ namespace Project.Assets._Project._Scripts.Systems
         [ContextMenu("Win")]
         public void OnWin()
         {
-            ToggleHintButton(false);
             TogglePauseButton(false);
             _coreUIElements.ShowWinScreen();
         }

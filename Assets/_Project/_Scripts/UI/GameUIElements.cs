@@ -9,13 +9,10 @@ namespace Project.Assets._Project._Scripts.UI
     {
         [field: Header("Button References")]
         [field: SerializeField] public Button PauseButton { get; private set; }
-        [field: SerializeField] public Button HintButton { get; private set; }
         [field: SerializeField] public Image LevelNumber { get; private set; }
         [field: Header("Timer")]
         [SerializeField] private TMP_Text _timerText;
         [SerializeField] private TMP_Text _timerAddedBonusText;
-        [Header("Hint Number")]
-        [SerializeField] private TMP_Text _numberOfHintsLeft;
         
         [Header("Hint Arrow")]
         [SerializeField] private RectTransform _hintArrowParent;
@@ -46,20 +43,6 @@ namespace Project.Assets._Project._Scripts.UI
                 .OnComplete(() => _timerAddedBonusText.gameObject.SetActive(false));
         }
 
-        public void SetNumberOfHints(int numberOfHints) 
-        {
-
-            _numberOfHintsLeft.text = numberOfHints.ToString();
-            if(numberOfHints <= 0)
-            {
-                HintButton.interactable = false;
-            }
-        }
-
-        public void ToggleHintButton(bool isActive)
-        {
-            HintButton.gameObject.SetActive(isActive);
-        }
 
         public void ToggleLevelNumberImage(bool isActive)
         {

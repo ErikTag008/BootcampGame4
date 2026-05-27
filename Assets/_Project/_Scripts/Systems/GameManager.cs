@@ -50,7 +50,6 @@ namespace Project.Assets._Project._Scripts.Systems
             SubscribeToEvents();
             CheckIfSoundNeedsToBeActive();
             _inputManager.ToggleCanInteract(false);
-            _uiManager.ToggleHintButton(false);
             _uiManager.TogglePauseButton(false);
             _uiManager.ToggleLevelNumberImage(false);
             _remainingTutorialHintAmount = _tutorialHintAmount;
@@ -115,7 +114,6 @@ namespace Project.Assets._Project._Scripts.Systems
             _uiManager.OnPauseRequested += TogglePause;
             _timerManager.OnTimeEnded += LoseLevel;
             _mergeManager.OnBlockCreated += RegisterBlock;
-            _hintManager.OnCurrentHintAmountChanged += _uiManager.SetNumberOfHints;
             _blocks.ForEach(block => 
                 {
                     block.OnExit += OnBlockExited;
@@ -152,7 +150,6 @@ namespace Project.Assets._Project._Scripts.Systems
             _uiManager.OnPauseRequested -= TogglePause;
             _timerManager.OnTimeEnded -= LoseLevel;
             _mergeManager.OnBlockCreated -= RegisterBlock;
-            _hintManager.OnCurrentHintAmountChanged -= _uiManager.SetNumberOfHints;
             _blocks.ForEach(block => 
                 {
                     block.OnExit -= OnBlockExited; 
@@ -235,10 +232,6 @@ namespace Project.Assets._Project._Scripts.Systems
             {
                 TryGetHint();
             }
-            else
-            {
-                _uiManager.ToggleHintButton(true);
-            }
             CheckForWin();
             
             
@@ -275,7 +268,6 @@ namespace Project.Assets._Project._Scripts.Systems
                             {
                                 if (_isTutorial)
                                 {
-                                    _uiManager.ToggleHintButton(false);
                                     _uiManager.TogglePauseButton(true);
                                     _uiManager.ToggleLevelNumberImage(true);
                                     DOVirtual.DelayedCall(0.1f, () => { TryGetHint(); _inputManager.ToggleCanInteract(true); });
@@ -284,7 +276,6 @@ namespace Project.Assets._Project._Scripts.Systems
                                 {
                                     _inputManager.ToggleCanInteract(true);
                                     _uiManager.TogglePauseButton(true);
-                                    _uiManager.ToggleHintButton(true);
                                     _uiManager.ToggleLevelNumberImage(true);
 
                                 }
