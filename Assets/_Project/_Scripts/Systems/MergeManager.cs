@@ -28,7 +28,7 @@ namespace Project.Assets._Project._Scripts.Systems
                 if(blockPrefab.Type == type)
                 {
                     var mergedBlock = Instantiate(blockPrefab, pos, rotation);
-                    if(timeBonus >= 0)
+                    if(timeBonus > 0f)
                     {
                         mergedBlock.SetTimeBonusOnMerge(timeBonus);
                     }
