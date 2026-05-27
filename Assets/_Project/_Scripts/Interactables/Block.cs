@@ -165,7 +165,8 @@ namespace Project.Assets._Project._Scripts.Interactables
                         print("Path Is Not Empty");
                         return;
                     }
-                    Vector3 otherPos = otherBlock.transform.position;
+                    var offset = transform.position - _bounds.center;
+                    Vector3 otherPos = otherCenter + offset;
                     var timeBonus = GetTimeBonus(otherBlock);
                     OnMergeStart?.Invoke(); 
                     DOTween.Sequence()
