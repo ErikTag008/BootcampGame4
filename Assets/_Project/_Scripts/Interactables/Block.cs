@@ -18,7 +18,7 @@ namespace Project.Assets._Project._Scripts.Interactables
         [SerializeField] private UnitColor _color;
         [SerializeField, Self] private Rigidbody _rb;
         [SerializeField, Self] private Collider[] _colliders;
-        [SerializeField, Child] private MeshRenderer[] _renderers;
+        [SerializeField, Child] private MeshRenderer _renderer;
         [SerializeField] private Transform _model;
         [SerializeField] private RenderingLayerMask _noOutlineLayer;
         [SerializeField] private RenderingLayerMask _outlinedLayer;
@@ -44,7 +44,9 @@ namespace Project.Assets._Project._Scripts.Interactables
         [field: Header("Feature Settings")]
         [field: SerializeField] public bool HasTimeBonus { get; private set; } = false;
         [field: SerializeField, ShowIf.ShowIf(nameof(HasTimeBonus), true)] public int TimeBonusInSeconds { get; private set; } = 5;
-        [SerializeField, ShowIf.ShowIf(nameof(HasTimeBonus), true)] private TMP_Text _timeBonusText;
+        [SerializeField, ShowIf.ShowIf(nameof(HasTimeBonus), true)] private Transform _timeBonusHourglass;
+        [SerializeField, ShowIf.ShowIf(nameof(HasTimeBonus), true)] private float _timeBonusHourglassRotationDuration = 1f;
+
         [field: SerializeField] public bool HasMoveDelay { get; private set; } = false;
         [field: SerializeField, ShowIf.ShowIf(nameof(HasMoveDelay), true)] public int MoveDelay { get; private set; } = 5;
         [SerializeField, ShowIf.ShowIf(nameof(HasMoveDelay), true)] private int _currentMoveDelay;
@@ -81,7 +83,15 @@ namespace Project.Assets._Project._Scripts.Interactables
             _rb.isKinematic = true;
             _currentMoveDelay = MoveDelay;
             _startingYPosition = transform.position.y;
-            _timeBonusText.text = HasTimeBonus ? $"+{TimeBonusInSeconds}s" : string.Empty;
+            _timeBonusHourglass.gameObject.SetActive(HasTimeBonus);
+            if (HasTimeBonus)
+            {
+                _timeBonusHourglass?.DORotate(new Vector3(0, 359f, 0), _timeBonusHourglassRotationDuration)
+                    .SetEase(Ease.Linear)
+                    .SetRelative(true)
+                    .SetLoops(-1, LoopType.Incremental);
+
+            }
             _moveDelayText.text = HasMoveDelay ? _currentMoveDelay.ToString() : string.Empty;
             _canMove = !HasMoveDelay || _currentMoveDelay <= 0;
         }
@@ -108,10 +118,10 @@ namespace Project.Assets._Project._Scripts.Interactables
         }
         public void ChangeMaterial(Material material)
         {
-            _renderers ??= GetComponentsInChildren<MeshRenderer>();
-            foreach(var rend in _renderers)
+            _renderer ??= GetComponentInChildren<MeshRenderer>();
+            if (_renderer != null)
             {
-                rend.material = material;
+                _renderer.material = material;
             }
         }
 
@@ -120,7 +130,12 @@ namespace Project.Assets._Project._Scripts.Interactables
             IsMergable = isMergable;
             HasTimeBonus = hasTimeBonus;
             HasMoveDelay = hasMoveDelay;
-            _timeBonusText.gameObject.SetActive(hasTimeBonus);
+            _timeBonusHourglass?.gameObject.SetActive(hasTimeBonus);
+            if (hasTimeBonus)
+            {
+                _timeBonusHourglass?.DORotate(new Vector3(transform.eulerAngles.x, 359f, transform.eulerAngles.z), _timeBonusHourglassRotationDuration).SetLoops(-1, LoopType.Restart);
+            }
+
             _moveDelayText.gameObject.SetActive(hasMoveDelay);
         }
 
@@ -225,11 +240,11 @@ namespace Project.Assets._Project._Scripts.Interactables
             TimeBonusInSeconds = timeBonus;
             if (TimeBonusInSeconds <= 0)
             {
-                _timeBonusText.text = string.Empty;
+                _timeBonusHourglass.gameObject.SetActive(false);
             }
             else 
             { 
-                _timeBonusText.text = $"+{TimeBonusInSeconds}s";
+                _timeBonusHourglass.gameObject.SetActive(true);
             }
 
         }
@@ -349,9 +364,9 @@ namespace Project.Assets._Project._Scripts.Interactables
 
         private void ToggleOutLine(bool isOn)
         {
-            foreach(var rend in _renderers)
+            if (_renderer != null)
             {
-                rend.renderingLayerMask = isOn ? _outlinedLayer : _noOutlineLayer;
+                _renderer.renderingLayerMask = isOn ? _outlinedLayer : _noOutlineLayer;
             }
         }
 

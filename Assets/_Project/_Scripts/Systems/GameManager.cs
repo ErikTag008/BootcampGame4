@@ -119,7 +119,8 @@ namespace Project.Assets._Project._Scripts.Systems
             _blocks.ForEach(block => 
                 {
                     block.OnExit += OnBlockExited;
-                    block.OnTimeBonusAcquired += _timerManager.AddTime; 
+                    block.OnTimeBonusAcquired += _timerManager.AddTime;
+                    block.OnTimeBonusAcquired += _uiManager.AddTimeBonus;
                     block.OnWaterHit += OnBlockWaterHit; 
                     block.OnDragToggle += OnBlockDragToggle;
                     block.OnMergeStart += OnMergeStart;
@@ -134,6 +135,8 @@ namespace Project.Assets._Project._Scripts.Systems
             _blocks.Add(block);
             block.OnExit += OnBlockExited;
             block.OnTimeBonusAcquired += _timerManager.AddTime;
+            block.OnTimeBonusAcquired += _uiManager.AddTimeBonus;
+
             block.OnWaterHit += OnBlockWaterHit;
             block.OnDragToggle += OnBlockDragToggle;
             block.OnMergeStart += OnMergeStart;
@@ -154,6 +157,7 @@ namespace Project.Assets._Project._Scripts.Systems
                 {
                     block.OnExit -= OnBlockExited; 
                     block.OnTimeBonusAcquired -= _timerManager.AddTime; 
+                    block.OnTimeBonusAcquired -= _uiManager.AddTimeBonus;
                     block.OnWaterHit -= OnBlockWaterHit;
                     block.OnDragToggle -= OnBlockDragToggle;
                     block.OnMergeStart -= OnMergeStart;

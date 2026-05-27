@@ -51,15 +51,16 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _GradientScale: 50
     - _QueueControl: 0
     - _QueueOffset: 0
     - _XRMotionVectorsPass: 1
     - _waterscale: 0
     m_Colors:
     - _depcolor: {r: 1, g: 1, b: 1, a: 1}
-    - _foamcolor: {r: 1, g: 1, b: 1, a: 1}
-    - _shallowcolor: {r: 0.1448469, g: 0.7496731, b: 0.8773585, a: 1}
+    - _foamcolor: {r: 0.745105, g: 0.9811321, b: 0.9746635, a: 1}
+    - _shallowcolor: {r: 0.21537916, g: 0.721693, b: 0.8301887, a: 1}
     - _waterdep: {r: 1, g: 1, b: 1, a: 1}
-    - _waterspeed: {r: 0.1, g: 0.1, b: 0, a: 0}
+    - _waterspeed: {r: 0.15, g: 0.15, b: 0, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

@@ -35,6 +35,8 @@ namespace Project.Assets._Project._Scripts.Systems
             return _coreUIElements.LoadingCover;
         }
 
+
+
         private void PauseReturnButton()
         {
             _coreUIElements.HidePauseScreen();
@@ -45,6 +47,11 @@ namespace Project.Assets._Project._Scripts.Systems
         public void ChangeTimerValue(string time)
         {
             _gameUIElements.SetTimerText(time);
+        }
+
+        public void AddTimeBonus(int seconds)
+        {
+            _gameUIElements.DisplayTimerBonus(seconds);
         }
         private void PauseButton()
         {

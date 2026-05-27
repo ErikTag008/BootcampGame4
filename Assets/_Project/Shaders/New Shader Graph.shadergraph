@@ -20,6 +20,9 @@
         },
         {
             "m_Id": "b95612976ef2426dbe261f885487d149"
+        },
+        {
+            "m_Id": "3b9b7861b2f0462887bf8b310b844d60"
         }
     ],
     "m_Keywords": [],
@@ -122,6 +125,9 @@
         },
         {
             "m_Id": "e8c2d5af33d94455bde48905e39dc4fa"
+        },
+        {
+            "m_Id": "4998fb52016944c2b6831e7eee3d366e"
         }
     ],
     "m_GroupDatas": [],
@@ -235,6 +241,20 @@
             "m_InputSlot": {
                 "m_Node": {
                     "m_Id": "6cb51df582014a39889f49c5f066e5be"
+                },
+                "m_SlotId": 1
+            }
+        },
+        {
+            "m_OutputSlot": {
+                "m_Node": {
+                    "m_Id": "4998fb52016944c2b6831e7eee3d366e"
+                },
+                "m_SlotId": 0
+            },
+            "m_InputSlot": {
+                "m_Node": {
+                    "m_Id": "a5cc6429f9fc40dea661f3f2a8f88d0d"
                 },
                 "m_SlotId": 1
             }
@@ -1305,6 +1325,50 @@
 }
 
 {
+    "m_SGVersion": 1,
+    "m_Type": "UnityEditor.ShaderGraph.Internal.Vector1ShaderProperty",
+    "m_ObjectId": "3b9b7861b2f0462887bf8b310b844d60",
+    "m_Guid": {
+        "m_GuidSerialized": "10520629-a6d4-49b9-af0d-b3cf94d499f4"
+    },
+    "promotedFromAssetID": "",
+    "promotedFromCategoryName": "",
+    "promotedOrdering": -1,
+    "m_Name": "GradientScale",
+    "m_DefaultRefNameVersion": 1,
+    "m_RefNameGeneratedByDisplayName": "GradientScale",
+    "m_DefaultReferenceName": "_GradientScale",
+    "m_OverrideReferenceName": "",
+    "m_GeneratePropertyBlock": true,
+    "m_UseCustomSlotLabel": false,
+    "m_CustomSlotLabel": "",
+    "m_DismissedVersion": 0,
+    "m_Precision": 0,
+    "overrideHLSLDeclaration": false,
+    "hlslDeclarationOverride": 0,
+    "m_Hidden": false,
+    "m_PerRendererData": false,
+    "m_customAttributes": [],
+    "m_Value": 0.0,
+    "m_FloatType": 0,
+    "m_LiteralFloatMode": false,
+    "m_RangeValues": {
+        "x": 0.0,
+        "y": 1.0
+    },
+    "m_SliderType": 0,
+    "m_SliderPower": 3.0,
+    "m_EnumType": 0,
+    "m_CSharpEnumString": "",
+    "m_EnumNames": [
+        "Default"
+    ],
+    "m_EnumValues": [
+        0
+    ]
+}
+
+{
     "m_SGVersion": 0,
     "m_Type": "UnityEditor.ShaderGraph.SceneDepthNode",
     "m_ObjectId": "3e73fff6adc841ff8a4b7d8911dab551",
@@ -1449,6 +1513,42 @@
         "w": 0.0
     },
     "m_LiteralMode": false
+}
+
+{
+    "m_SGVersion": 0,
+    "m_Type": "UnityEditor.ShaderGraph.PropertyNode",
+    "m_ObjectId": "4998fb52016944c2b6831e7eee3d366e",
+    "m_Group": {
+        "m_Id": ""
+    },
+    "m_Name": "Property",
+    "m_DrawState": {
+        "m_Expanded": true,
+        "m_Position": {
+            "serializedVersion": "2",
+            "x": -2141.0,
+            "y": -1458.0001220703125,
+            "width": 149.0,
+            "height": 34.0
+        }
+    },
+    "m_Slots": [
+        {
+            "m_Id": "9418cf0ee03c4e03aa1d29ae2a117169"
+        }
+    ],
+    "synonyms": [],
+    "m_Precision": 0,
+    "m_PreviewExpanded": true,
+    "m_DismissedVersion": 0,
+    "m_PreviewMode": 0,
+    "m_CustomColors": {
+        "m_SerializableColors": []
+    },
+    "m_Property": {
+        "m_Id": "3b9b7861b2f0462887bf8b310b844d60"
+    }
 }
 
 {
@@ -1967,6 +2067,9 @@
         },
         {
             "m_Id": "b95612976ef2426dbe261f885487d149"
+        },
+        {
+            "m_Id": "3b9b7861b2f0462887bf8b310b844d60"
         }
     ]
 }
@@ -2218,6 +2321,22 @@
     "m_StageCapability": 3,
     "m_Value": 15.0,
     "m_DefaultValue": 10.0,
+    "m_Labels": [],
+    "m_LiteralMode": false
+}
+
+{
+    "m_SGVersion": 0,
+    "m_Type": "UnityEditor.ShaderGraph.Vector1MaterialSlot",
+    "m_ObjectId": "9418cf0ee03c4e03aa1d29ae2a117169",
+    "m_Id": 0,
+    "m_DisplayName": "GradientScale",
+    "m_SlotType": 1,
+    "m_Hidden": false,
+    "m_ShaderOutputName": "Out",
+    "m_StageCapability": 3,
+    "m_Value": 0.0,
+    "m_DefaultValue": 0.0,
     "m_Labels": [],
     "m_LiteralMode": false
 }
