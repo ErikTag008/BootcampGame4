@@ -175,7 +175,7 @@ namespace Project.Assets._Project._Scripts.Interactables
                         .AppendCallback(() =>
                         {
                             // Notify spawn position as snapped (tile normalized)
-                            OnMerge?.Invoke(mergedResultColor, otherBlock.Type,otherPos, transform.rotation, timeBonus);
+                            OnMerge?.Invoke(mergedResultColor, otherBlock.Type,SnapToTilePosition(otherPos), transform.rotation, timeBonus);
                         });
                 }
             }

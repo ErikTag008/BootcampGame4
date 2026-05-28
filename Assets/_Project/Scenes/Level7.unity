@@ -2815,6 +2815,10 @@ PrefabInstance:
       value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 836653351772218855, guid: fde1eb4027d11f441a23e60756fbaec2, type: 3}
+      propertyPath: <IsMergable>k__BackingField
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 836653351772218855, guid: fde1eb4027d11f441a23e60756fbaec2, type: 3}
       propertyPath: <HasMoveDelay>k__BackingField
       value: 1
       objectReference: {fileID: 0}
@@ -6094,6 +6098,10 @@ PrefabInstance:
     - target: {fileID: 836653351772218855, guid: fde1eb4027d11f441a23e60756fbaec2, type: 3}
       propertyPath: <MoveDelay>k__BackingField
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 836653351772218855, guid: fde1eb4027d11f441a23e60756fbaec2, type: 3}
+      propertyPath: <IsMergable>k__BackingField
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 836653351772218855, guid: fde1eb4027d11f441a23e60756fbaec2, type: 3}
       propertyPath: <HasMoveDelay>k__BackingField
