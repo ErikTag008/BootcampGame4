@@ -15,7 +15,7 @@ PrefabInstance:
     - target: {fileID: 592987627794175172, guid: 75225ece5a0e8a341a05851a07e89abe, type: 3}
       propertyPath: _model
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 5246267553165709548}
     - target: {fileID: 592987627794175172, guid: 75225ece5a0e8a341a05851a07e89abe, type: 3}
       propertyPath: <Type>k__BackingField
       value: 8
@@ -197,5 +197,10 @@ BoxCollider:
 --- !u!23 &4906216459761261783 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 6499625245552330811, guid: 75225ece5a0e8a341a05851a07e89abe, type: 3}
+  m_PrefabInstance: {fileID: 2172194456008152300}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &5246267553165709548 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6263191870250796032, guid: 75225ece5a0e8a341a05851a07e89abe, type: 3}
   m_PrefabInstance: {fileID: 2172194456008152300}
   m_PrefabAsset: {fileID: 0}

@@ -10670,7 +10670,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1594160203885953064, guid: af6a29f4632bd504d8d67fd3dd9aa92d, type: 3}
       propertyPath: <HasTimeBonus>k__BackingField
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1992560045626388515, guid: af6a29f4632bd504d8d67fd3dd9aa92d, type: 3}
       propertyPath: m_Name
@@ -13321,6 +13321,10 @@ PrefabInstance:
     - target: {fileID: 1898045534463543752, guid: 6918a9d40b998ca4eabbd05eebb28eed, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2078660763535412265, guid: 6918a9d40b998ca4eabbd05eebb28eed, type: 3}
+      propertyPath: _timerStartingValueInSeconds
+      value: 180
       objectReference: {fileID: 0}
     - target: {fileID: 4822544174352059483, guid: 6918a9d40b998ca4eabbd05eebb28eed, type: 3}
       propertyPath: m_Name

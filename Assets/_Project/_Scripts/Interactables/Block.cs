@@ -251,6 +251,55 @@ namespace Project.Assets._Project._Scripts.Interactables
             return true;
         }
 
+        private bool IsPathEmptyToExit(Vector3 direction, float distance, Bounds bounds, Block thisBlock, ExitPoint exitBlock)
+        {
+            if (direction.sqrMagnitude <= 0.0001f || distance <= 0f) return true;
+
+            Vector3 dir = direction.normalized;
+
+            // Start a tiny bit ahead to avoid hitting self-colliders at origin
+            Vector3 origin = bounds.center + dir * 0.1f;
+            var rays = new RaycastHit[5];
+            Vector3 halfExtents = bounds.extents * 0.75f;
+
+            // Flatten the cast in the movement direction
+            Vector3 absDir = new Vector3(
+                Mathf.Abs(dir.x),
+                Mathf.Abs(dir.y),
+                Mathf.Abs(dir.z));
+
+            if (absDir.x > 0.5f)
+                halfExtents.x = 0.01f;
+
+            if (absDir.y > 0.5f)
+                halfExtents.y = 0.01f;
+
+            if (absDir.z > 0.5f)
+                halfExtents.z = 0.01f;
+            distance -= 0.25f;
+            int rayCount = Physics.BoxCastNonAlloc(origin, halfExtents, dir, rays, Quaternion.identity, distance, _obstacleForMergeLayer);
+            Debug.DrawLine(origin, origin + dir * distance, UnityEngine.Color.darkRed, 2f);
+            int checkCount = Mathf.Min(rayCount, rays.Length);
+            foreach (RaycastHit ray in rays)
+            {
+                if (ray.collider == null) continue;
+                print(ray.collider.name);
+            }
+            for (int i = 0; i < checkCount; i++)
+            {
+                var hit = rays[i];
+                if (hit.collider == null) continue;
+                // ignore very close hits caused by starting overlap
+                //if (hit.distance <= 0.05f) continue;
+                var hitGo = hit.collider.gameObject;
+                if (hitGo == thisBlock.gameObject || hitGo == exitBlock.gameObject) continue;
+                if (hitGo.GetComponent<Block>() == null) continue;
+                print($"Hit {hit.collider.name} while checking path");
+                return false;
+            }
+            return true;
+        }
+
         public void SetTimeBonusOnMerge(int timeBonus)
         {
             HasTimeBonus = true;
@@ -297,10 +346,11 @@ namespace Project.Assets._Project._Scripts.Interactables
 
         private void CheckExitCollision(Collider collider)
         {
-            if (collider.CompareTag("Exit") && collider.TryGetComponent(out ExitPoint exitPoint))
+            if (collider.CompareTag("Exit") && this._isGettingDragged && collider.TryGetComponent(out ExitPoint exitPoint))
             {
                 if (_canExit && exitPoint.CanExit(_bounds, _color))
                 {
+                    if (!IsPathEmptyToExit(exitPoint.GetExitVector(), Vector3.Distance(_bounds.center, exitPoint.GetExitVector()), _bounds, this, exitPoint)) return;
                     _hasExited = true;
                     OnExit?.Invoke();
                     ExitThrough(exitPoint.GetExitVector());

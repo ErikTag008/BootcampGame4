@@ -237,7 +237,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 037fc3b5200077d46a8199da8a0894a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: ProjectAssembly::Project.Assets._Project._Scripts.Systems.TimerManager
-  _timerStartingValueInSeconds: 300
+  _timerStartingValueInSeconds: 180
 --- !u!1 &4822544174352059483
 GameObject:
   m_ObjectHideFlags: 0
@@ -592,7 +592,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7e375b089fcfe9148b9570b90762e140, type: 3}
   m_Name: 
   m_EditorClassIdentifier: ProjectAssembly::Project.Assets._Project._Scripts.Systems.HintManager
-  _startingHintAmount: 3
 --- !u!1 &7943458358728782408
 GameObject:
   m_ObjectHideFlags: 0
