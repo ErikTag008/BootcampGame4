@@ -154,13 +154,13 @@ namespace Project.Assets._Project._Scripts.Interactables
             if (!IsMergable) return;
             if (collision.collider.TryGetComponent(out Block otherBlock) && otherBlock.IsMergable)
             {
-                if (!_isMerged && otherBlock.CanMerge(_bounds, _color, Type, out var mergedResultColor))
+                if (!_isMerged && otherBlock.CanMerge(_bounds, _color, Type, transform.eulerAngles.y, out var mergedResultColor))
                 {
                     Vector3 otherCenter = otherBlock._bounds.center;
                     Vector3 dirThis = otherCenter - _bounds.center;
                     float distThis = Mathf.Max(0f, dirThis.magnitude);
 
-                    if (!IsPathEmpty(dirThis, distThis, _bounds, this, otherBlock))
+                    if (!IsPathEmpty(dirThis, distThis - 0.1f, _bounds, this, otherBlock))
                     {
                         print("Path Is Not Empty");
                         return;
@@ -212,9 +212,25 @@ namespace Project.Assets._Project._Scripts.Interactables
             // Start a tiny bit ahead to avoid hitting self-colliders at origin
             Vector3 origin = bounds.center + dir * 0.1f;
             var rays = new RaycastHit[5];
-            Vector3 halfExtents = bounds.extents;
-            halfExtents *= 0.8f;
+            Vector3 halfExtents = bounds.extents * 0.75f;
+
+            // Flatten the cast in the movement direction
+            Vector3 absDir = new Vector3(
+                Mathf.Abs(dir.x),
+                Mathf.Abs(dir.y),
+                Mathf.Abs(dir.z));
+
+            if (absDir.x > 0.5f)
+                halfExtents.x = 0.01f;
+
+            if (absDir.y > 0.5f)
+                halfExtents.y = 0.01f;
+
+            if (absDir.z > 0.5f)
+                halfExtents.z = 0.01f;
+            distance -= 0.25f;
             int rayCount = Physics.BoxCastNonAlloc(origin, halfExtents, dir, rays, Quaternion.identity, distance, _obstacleForMergeLayer);
+            Debug.DrawLine(origin, origin + dir * distance, UnityEngine.Color.darkRed, 2f);
             int checkCount = Mathf.Min(rayCount, rays.Length);
             foreach(RaycastHit ray in rays)
             {
@@ -294,10 +310,11 @@ namespace Project.Assets._Project._Scripts.Interactables
             }
         }
 
-        public bool CanMerge(Bounds blockBounds, UnitColor blockColor, BlockType blockType, out UnitColor mergedResultColor)
+        public bool CanMerge(Bounds blockBounds, UnitColor blockColor, BlockType blockType, float yAngle, out UnitColor mergedResultColor)
         {
             mergedResultColor = UnitColor.Orange;
-            if (!IsMergable || blockType != Type || _isMerged)
+
+            if (!IsMergable || blockType != Type || _isMerged || Mathf.Abs(Mathf.DeltaAngle(transform.eulerAngles.y, yAngle)) > 0.01f)
             {
                 return false;
             }
