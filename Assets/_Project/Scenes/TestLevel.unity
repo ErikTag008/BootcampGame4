@@ -2096,10 +2096,7 @@ MonoBehaviour:
   - {fileID: 7261281527769625761}
   - {fileID: 7261281527769625762}
   _blocks:
-  - {fileID: 0}
-  - {fileID: 0}
   - {fileID: 1648561212}
-  - {fileID: 0}
 --- !u!114 &7261281527769625760 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 7101873698585384470, guid: f9b384c456eb78541854165a369af269, type: 3}
