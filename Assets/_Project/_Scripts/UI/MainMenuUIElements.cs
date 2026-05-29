@@ -9,6 +9,7 @@ namespace Project.Assets._Project._Scripts.UI
         [SerializeField] private RectTransform _levelButtonsLayout;
         [SerializeField] private Button _backButton;
         [SerializeField] private Image _levelsImage;
+        [SerializeField] private Image _settingsImage;
         [SerializeField] private Image _settingsButtonsLayout;
         [SerializeField] private Button _settingsBackButton;
 
@@ -23,6 +24,7 @@ namespace Project.Assets._Project._Scripts.UI
             _levelButtonsLayout?.gameObject.SetActive(false);
             _backButton?.gameObject.SetActive(false);
             _levelsImage?.gameObject.SetActive(false);
+            _settingsImage?.gameObject.SetActive(false);
             _settingsButtonsLayout?.gameObject.SetActive(false);
             _settingsBackButton?.gameObject.SetActive(false);
         }
