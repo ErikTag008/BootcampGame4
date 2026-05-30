@@ -3,6 +3,7 @@ using Gilzoide.UpdateManager;
 using Project.Assets._Project._Scripts.GridComponents;
 using Project.Assets._Project._Scripts.Interactables;
 using Reflex.Attributes;
+using System;
 using System.Collections.Generic;
 using Unity.Cinemachine;
 using UnityEngine;
@@ -29,6 +30,7 @@ namespace Project.Assets._Project._Scripts.Systems
         private bool _isDragging = false;
         private Tween _cameraShakeTween;
         private IDragable _currentDraggedBlock;
+        public event Action OnTouch;
         private void Start()
         {
             _inputReader.OnDragStart += HandleDragStart;
@@ -83,6 +85,7 @@ namespace Project.Assets._Project._Scripts.Systems
         private void HandleDragStart(Vector2 screenPos)
         {
             if (IsPointerOverUI(_inputReader.DragPosition) || !_canInteract) return;
+            OnTouch?.Invoke();
             var touchRay = _camera.ScreenPointToRay(_inputReader.DragPosition);
             if (Physics.Raycast(touchRay, out var hit, _interactableLayer) && hit.collider != null && hit.collider.TryGetComponent<IDragable>(out var dragable))
             {

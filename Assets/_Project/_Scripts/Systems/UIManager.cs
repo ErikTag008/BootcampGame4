@@ -13,7 +13,6 @@ namespace Project.Assets._Project._Scripts.Systems
         public event Action OnLevelReloadRequested;
         public event Action OnContinueToNextLevelRequested;
         public event Action OnReturnToMenuRequested;
-        public event Action OnHintRequested;
         public event Action<bool> OnPauseRequested;
 
         private void Start()
@@ -33,7 +32,10 @@ namespace Project.Assets._Project._Scripts.Systems
             return _coreUIElements.LoadingCover;
         }
 
-
+        public void ToggleTutorial(bool enabled)
+        {
+            _gameUIElements.ToggleTutorialPointers(enabled);
+        }
 
         private void PauseReturnButton()
         {
@@ -56,10 +58,7 @@ namespace Project.Assets._Project._Scripts.Systems
             OnPauseRequested?.Invoke(true);
         }
 
-        public void ToggleHintArrow(bool isActive)
-        {
-            _gameUIElements.ToggleHintArrow(isActive);
-        }
+        
 
         public void ToggleLevelNumberImage(bool isActive)
         {
@@ -72,10 +71,7 @@ namespace Project.Assets._Project._Scripts.Systems
             _gameUIElements.TogglePauseButton(isActive);
         }
 
-        public void SetHintArrowPos(Camera cam, Vector3 pos)
-        {
-            _gameUIElements.UpdateHintArrowPosition(cam, pos);
-        }
+        
 
 
         [ContextMenu("Lose")]

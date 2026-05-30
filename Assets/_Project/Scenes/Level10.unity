@@ -14379,7 +14379,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4370644338646686039, guid: f9b384c456eb78541854165a369af269, type: 3}
       propertyPath: m_text
-      value: 10
+      value: LVL 10
       objectReference: {fileID: 0}
     - target: {fileID: 4695236588835444395, guid: f9b384c456eb78541854165a369af269, type: 3}
       propertyPath: m_Name

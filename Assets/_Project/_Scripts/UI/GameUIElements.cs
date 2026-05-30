@@ -1,4 +1,6 @@
 using DG.Tweening;
+using KBCore.Refs;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -9,21 +11,23 @@ namespace Project.Assets._Project._Scripts.UI
     {
         [field: Header("Button References")]
         [field: SerializeField] public Button PauseButton { get; private set; }
-        [field: SerializeField] public Image LevelNumber { get; private set; }
+        [field: SerializeField] public TMP_Text LevelNumber { get; private set; }
         [field: Header("Timer")]
         [SerializeField] private TMP_Text _timerText;
         [SerializeField] private TMP_Text _timerAddedBonusText;
-        
-        [Header("Hint Arrow")]
-        [SerializeField] private RectTransform _hintArrowParent;
-        [SerializeField] private Image _hintArrowIcon;
-        [SerializeField] private Vector2 _hintArrowOffset = new Vector2(150, -150);
-        [SerializeField] private Vector2 _hintArrowAnimationTargetOffset = new Vector2(-50, -50);
-        [SerializeField] private float _hintArrowAnimationDuration = 1f;
-        [SerializeField] private Ease _hintArrowAnimationEase = Ease.InOutSine;
-        private Tween _arrowTween;
+        [Header("Tutorial")]
+        [SerializeField] private List<TutorialPointer> _tutorialPointers = new();
+
+
         private Tween _timerBonusTween;
 
+        public void ToggleTutorialPointers(bool isEnabled)
+        {
+            foreach (var pointer in _tutorialPointers)
+            {
+                pointer?.gameObject.SetActive(isEnabled);
+            }
+        }
         public void SetTimerText(string text)
         {
             _timerText.text = text;
@@ -52,37 +56,6 @@ namespace Project.Assets._Project._Scripts.UI
         public void TogglePauseButton(bool isActive)
         {
             PauseButton.gameObject.SetActive(isActive);
-        }
-
-        public void ToggleHintArrow(bool isActive)
-        {
-            _hintArrowParent.gameObject.SetActive(isActive);
-            if (isActive)
-            {
-                Color startingColor = _hintArrowIcon.color;
-                Color noAlpha = startingColor;
-                noAlpha.a = 0;
-                _arrowTween = DOVirtual.Color(startingColor, noAlpha, _hintArrowAnimationDuration, c => _hintArrowIcon.color = c)
-                    .SetEase(_hintArrowAnimationEase)
-                    .SetLoops(-1, LoopType.Yoyo)
-                    .OnComplete(() => _hintArrowIcon.color = startingColor)
-                    .OnKill(() =>  _hintArrowIcon.color = startingColor);
-                
-            }
-            else
-            {
-                _arrowTween?.Complete();
-                _arrowTween?.Kill();
-                _hintArrowIcon.rectTransform.localPosition = Vector2.zero;
-            }
-
-
-        }
-
-        public void UpdateHintArrowPosition(Camera cam, Vector3 position)
-        {
-            var screenPos = cam.WorldToScreenPoint(position);
-            _hintArrowParent.position = screenPos + (Vector3)_hintArrowOffset;
         }
     }
 }

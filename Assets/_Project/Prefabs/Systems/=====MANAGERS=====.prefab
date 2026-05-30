@@ -271,7 +271,6 @@ Transform:
   - {fileID: 7825231295673545359}
   - {fileID: 5185467301379669187}
   - {fileID: 6955949826986018450}
-  - {fileID: 7944319618883119445}
   - {fileID: 6682352908791895570}
   - {fileID: 3589834185993459323}
   - {fileID: 7558600026041870254}
@@ -502,8 +501,8 @@ MonoBehaviour:
   _cameraShakeFrequency: 1
   _startingCameraEffectsDuration: 1.5
   _cameraBetweenTutorialDelay: 1
-  _isTutorial: 0
-  _tutorialHintAmount: 2
+  _hasTutorial: 0
+  _tutorialInputDisabledDuration: 1
 --- !u!1 &6534798301577518477
 GameObject:
   m_ObjectHideFlags: 0
@@ -548,50 +547,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 08d38de2f58e3584c96752afc80da293, type: 3}
   m_Name: 
   m_EditorClassIdentifier: ProjectAssembly::Project.UIManager
---- !u!1 &7763065910101191971
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 7944319618883119445}
-  - component: {fileID: 8441068690458146674}
-  m_Layer: 0
-  m_Name: HintManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 2147483647
-  m_IsActive: 1
---- !u!4 &7944319618883119445
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7763065910101191971}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1898045534463543752}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &8441068690458146674
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7763065910101191971}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7e375b089fcfe9148b9570b90762e140, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: ProjectAssembly::Project.Assets._Project._Scripts.Systems.HintManager
 --- !u!1 &7943458358728782408
 GameObject:
   m_ObjectHideFlags: 0

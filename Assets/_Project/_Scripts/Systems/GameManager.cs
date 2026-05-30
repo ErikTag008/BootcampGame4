@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Project.Assets._Project._Scripts.ShowIf;
+using System;
 
 namespace Project.Assets._Project._Scripts.Systems
 {
@@ -14,7 +15,6 @@ namespace Project.Assets._Project._Scripts.Systems
         [Inject] private readonly UIManager _uiManager;
         [Inject] private readonly InputManager _inputManager; 
         [Inject] private readonly LevelManager _levelManager;
-        [Inject] private readonly HintManager _hintManager;
         [Inject] private readonly IAudioService _audioService;
         [Inject] private readonly TimerManager _timerManager;
         [Inject] private readonly MergeManager _mergeManager;
@@ -33,15 +33,12 @@ namespace Project.Assets._Project._Scripts.Systems
         [SerializeField] private float _startingCameraEffectsDuration = 1f;
         [SerializeField] private float _cameraBetweenTutorialDelay = 1f;
         [Header("Tutorial Config")]
-        [SerializeField] private bool _isTutorial = false;
-        [SerializeField, ShowIf("_isTutorial", true)] private int _tutorialHintAmount = 2;
+        [SerializeField] private bool _hasTutorial;
+        [SerializeField] private float _tutorialInputDisabledDuration = 1f;
 
 
-        private int _remainingTutorialHintAmount;
         private bool _hasLost = false;
         private bool _hasWon = false;
-        private bool _showingHintArrow = false;
-        private Vector3 _lastHintPosition = Vector3.zero;
         private bool _soundTurnedOn = true;
 
         private void Start()
@@ -52,9 +49,9 @@ namespace Project.Assets._Project._Scripts.Systems
             _inputManager.ToggleCanInteract(false);
             _uiManager.TogglePauseButton(false);
             _uiManager.ToggleLevelNumberImage(false);
-            _remainingTutorialHintAmount = _tutorialHintAmount;
             DoStartingSequence();
         }
+
 
         private void OnDestroy()
         {
@@ -64,6 +61,28 @@ namespace Project.Assets._Project._Scripts.Systems
 
             DOTween.KillAll();
         }
+        private void StartTutorialIfNeeded()
+        {
+            if (_hasTutorial)
+            {
+                DoTutorialActions();
+            }
+            _inputManager.OnTouch += StopTutorial;
+        }
+
+        private void DoTutorialActions()
+        {
+            _inputManager.ToggleCanInteract(false);
+            _uiManager.ToggleTutorial(true);
+            DOVirtual.DelayedCall(_tutorialInputDisabledDuration, () => _inputManager.ToggleCanInteract(true));
+        }
+
+        private void StopTutorial()
+        {
+            _inputManager.OnTouch -= StopTutorial;
+            _uiManager.ToggleTutorial(false);
+        }
+
 
 
         private void TogglePause(bool isPaused)
@@ -82,10 +101,6 @@ namespace Project.Assets._Project._Scripts.Systems
         public void ManagedUpdate()
         {
             Application.targetFrameRate = 60;
-            if (_showingHintArrow)
-            {
-                _uiManager.SetHintArrowPos(_camera, _lastHintPosition);
-            }
         }
 
         private void CheckIfSoundNeedsToBeActive()
@@ -110,7 +125,6 @@ namespace Project.Assets._Project._Scripts.Systems
             _uiManager.OnLevelReloadRequested += _levelManager.ReloadLevel;
             _uiManager.OnContinueToNextLevelRequested += _levelManager.ContinueToNextLevel;
             _uiManager.OnReturnToMenuRequested += _levelManager.ReturnToMenu;
-            _uiManager.OnHintRequested += TryGetHint;
             _uiManager.OnPauseRequested += TogglePause;
             _timerManager.OnTimeEnded += LoseLevel;
             _mergeManager.OnBlockCreated += RegisterBlock;
@@ -146,7 +160,6 @@ namespace Project.Assets._Project._Scripts.Systems
             _uiManager.OnLevelReloadRequested -= _levelManager.ReloadLevel;
             _uiManager.OnContinueToNextLevelRequested -= _levelManager.ContinueToNextLevel;
             _uiManager.OnReturnToMenuRequested -= _levelManager.ReturnToMenu;
-            _uiManager.OnHintRequested -= TryGetHint;
             _uiManager.OnPauseRequested -= TogglePause;
             _timerManager.OnTimeEnded -= LoseLevel;
             _mergeManager.OnBlockCreated -= RegisterBlock;
@@ -178,48 +191,12 @@ namespace Project.Assets._Project._Scripts.Systems
 
             }
         }
-        private void TryGetHint()
-        {
-            if(_isTutorial && _remainingTutorialHintAmount > 0)
-            {
-                _remainingTutorialHintAmount--;
-                //if (_hintManager.TryGetHint(_blocks, out var pos, true))
-                //{
-                //    _lastHintPosition = pos;
-                //    _inputManager.ToggleCanInteract(false);
-                //    DOVirtual.DelayedCall(_cameraBetweenTutorialDelay,
-                //        () =>
-                //        {
-                //            _inputManager.SetCameraTargetPositionTo(_lastHintPosition);
-                //            _showingHintArrow = true;
-                //            _uiManager.SetHintArrowPos(_camera, _lastHintPosition);
-                //            _uiManager.ToggleHintArrow(true);
-                //            _inputManager.ToggleCanInteract(true);
-                //        });
-                    
-                //}
-            }
-            else
-            {
-                //if (_hintManager.TryGetHint(_blocks, out var pos))
-                //{
-                //    _lastHintPosition = pos;
-                //    _inputManager.SetCameraTargetPositionTo(_lastHintPosition);
-                //    _showingHintArrow = true;
-                //    _uiManager.SetHintArrowPos(_camera, _lastHintPosition);
-                //    _uiManager.ToggleHintArrow(true);
-                //}
-            }
-            
-        }
+        
 
 
         private void OnBlockExited()
         {
             if (_hasWon || _hasLost) return;
-            _hintManager.OnAnyBlockInteracted();
-            _uiManager.ToggleHintArrow(false);
-            _showingHintArrow = false;
             foreach(var block in _blocks)
             {
                 if(block != null && block.gameObject.activeInHierarchy && !block.HasExited && block.HasMoveDelay)
@@ -228,14 +205,7 @@ namespace Project.Assets._Project._Scripts.Systems
                 }
             }
             if (_hasWon) return;
-            if (_isTutorial && _remainingTutorialHintAmount > 0)
-            {
-                TryGetHint();
-            }
             CheckForWin();
-            
-            
-
         }
 
         private void OnBlockWaterHit()
@@ -266,20 +236,11 @@ namespace Project.Assets._Project._Scripts.Systems
                             .Append(_inputManager.StartingCameraZoomEffect(_startingCameraEffectsDuration))
                             .AppendCallback(() =>
                             {
-                                if (_isTutorial)
-                                {
-                                    _uiManager.TogglePauseButton(true);
-                                    _uiManager.ToggleLevelNumberImage(true);
-                                    DOVirtual.DelayedCall(0.1f, () => { TryGetHint(); _inputManager.ToggleCanInteract(true); });
-                                }
-                                else
-                                {
-                                    _inputManager.ToggleCanInteract(true);
-                                    _uiManager.TogglePauseButton(true);
-                                    _uiManager.ToggleLevelNumberImage(true);
-
-                                }
+                                _inputManager.ToggleCanInteract(true);
+                                _uiManager.TogglePauseButton(true);
+                                _uiManager.ToggleLevelNumberImage(true);
                                 _timerManager.StartTimer();
+                                StartTutorialIfNeeded();
                             });
         }
 
