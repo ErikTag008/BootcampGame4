@@ -38,11 +38,11 @@ PrefabInstance:
       objectReference: {fileID: 4906216459761261783}
     - target: {fileID: 3476637084762227628, guid: 75225ece5a0e8a341a05851a07e89abe, type: 3}
       propertyPath: m_Size.x
-      value: 2.95
+      value: 2.8
       objectReference: {fileID: 0}
     - target: {fileID: 3476637084762227628, guid: 75225ece5a0e8a341a05851a07e89abe, type: 3}
       propertyPath: m_Size.z
-      value: 0.95
+      value: 0.8
       objectReference: {fileID: 0}
     - target: {fileID: 3476637084762227628, guid: 75225ece5a0e8a341a05851a07e89abe, type: 3}
       propertyPath: m_Center.x
@@ -148,8 +148,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.95000005, y: 1, z: 2.0087872}
-  m_Center: {x: 1, y: 0.5, z: 1.4706063}
+  m_Size: {x: 0.8, y: 1, z: 2.022467}
+  m_Center: {x: 1, y: 0.5, z: 1.359373}
 --- !u!23 &4906216459761261783 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 6499625245552330811, guid: 75225ece5a0e8a341a05851a07e89abe, type: 3}

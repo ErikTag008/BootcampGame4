@@ -36,6 +36,7 @@ namespace Project.Assets._Project._Scripts.Interactables
         [SerializeField] private Ease _exitEase = Ease.InCubic;
         [SerializeField] private float _mergeShakeMagnitude = 0.2f;
         [SerializeField] private int _mergeShakeLoops = 4;
+        [SerializeField] private float _minExitOrMergeDistance = 0.3f;
         [SerializeField] private ParticleSystem _fallThroughWaterVFX;
         [SerializeField] private ParticleSystem _mergeVFX;
 
@@ -62,6 +63,7 @@ namespace Project.Assets._Project._Scripts.Interactables
         private Tween _posLockInTween;
         private float _startingYPosition;
         private UnitColor _lastColor;
+        private float _targetDistance;
         public bool HasExited => _hasExited;
         public UnitColor Color => _color;
         private bool _canExit = true;
@@ -154,8 +156,9 @@ namespace Project.Assets._Project._Scripts.Interactables
             if (!IsMergable) return;
             if (collision.collider.TryGetComponent(out Block otherBlock) && otherBlock.IsMergable)
             {
-                if (!_isMerged && otherBlock.CanMerge(_bounds, _color, Type, transform.eulerAngles.y, out var mergedResultColor))
+                if (!_isMerged && _targetDistance >= _minExitOrMergeDistance && _isGettingDragged && otherBlock.CanMerge(_bounds, _color, Type, transform.eulerAngles.y, out var mergedResultColor))
                 {
+                    print("Magnitude: " + _targetDistance);
                     Vector3 otherCenter = otherBlock._bounds.center;
                     Vector3 dirThis = otherCenter - _bounds.center;
                     float distThis = Mathf.Max(0f, dirThis.magnitude);
@@ -346,10 +349,11 @@ namespace Project.Assets._Project._Scripts.Interactables
 
         private void CheckExitCollision(Collider collider)
         {
-            if (collider.CompareTag("Exit") && this._isGettingDragged && collider.TryGetComponent(out ExitPoint exitPoint))
+            if (collider.CompareTag("Exit") && this._isGettingDragged  && collider.TryGetComponent(out ExitPoint exitPoint))
             {
-                if (_canExit && exitPoint.CanExit(_bounds, _color))
+                if (_canExit && _targetDistance >= _minExitOrMergeDistance && exitPoint.CanExit(_bounds, _color))
                 {
+                    print($"Magnitude: {_targetDistance}");
                     if (!IsPathEmptyToExit(exitPoint.GetExitVector(), Vector3.Distance(_bounds.center, exitPoint.GetExitVector()), _bounds, this, exitPoint)) return;
                     _hasExited = true;
                     OnExit?.Invoke();
@@ -447,7 +451,7 @@ namespace Project.Assets._Project._Scripts.Interactables
             Vector3 difference = desiredPosition - currentPosition;
 
             float distance = difference.magnitude;
-
+            _targetDistance = distance;
             if (distance < 0.02f)
             {
                 _rb.linearVelocity = Vector3.zero;

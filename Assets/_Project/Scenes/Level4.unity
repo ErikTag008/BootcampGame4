@@ -8761,17 +8761,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1465138328}
   m_Mesh: {fileID: 3461125516173036102, guid: b55dda4eb6c5b924ba273eec42026d08, type: 3}
---- !u!114 &1465755317 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 8441068690458146674, guid: 6918a9d40b998ca4eabbd05eebb28eed, type: 3}
-  m_PrefabInstance: {fileID: 5876160971436351286}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7e375b089fcfe9148b9570b90762e140, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: ProjectAssembly::Project.Assets._Project._Scripts.Systems.HintManager
 --- !u!1 &1469978040
 GameObject:
   m_ObjectHideFlags: 0
@@ -13800,7 +13789,6 @@ MonoBehaviour:
   _inputReader: {fileID: 58462656}
   _inputManager: {fileID: 58462655}
   _levelManager: {fileID: 997780316}
-  _hintManager: {fileID: 1465755317}
   _timerManager: {fileID: 577184483}
   _blockColorChanger: {fileID: 5876160971436351287}
   _audioManager: {fileID: 33045937}
