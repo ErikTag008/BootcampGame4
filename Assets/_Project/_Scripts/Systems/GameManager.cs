@@ -41,6 +41,8 @@ namespace Project.Assets._Project._Scripts.Systems
         private void Start()
         {
             DOVirtual.DelayedCall(0.5f, () => Application.targetFrameRate = 60);
+            DOVirtual.DelayedCall(0.5f, () => QualitySettings.vSyncCount = 0);
+
             SubscribeToEvents();
             CheckIfSoundNeedsToBeActive();
             _inputManager.ToggleCanInteract(false);
