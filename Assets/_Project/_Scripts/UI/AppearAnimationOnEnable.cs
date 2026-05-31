@@ -1,7 +1,9 @@
 using DG.Tweening;
+using DG.Tweening.Core;
 using KBCore.Refs;
 using UnityEngine;
 using UnityEngine.UI;
+using DG.Tweening.CustomPlugins;
 
 namespace Project.Assets._Project._Scripts.UI
 {
@@ -11,15 +13,22 @@ namespace Project.Assets._Project._Scripts.UI
         [SerializeField] private float _duration = 0.5f;
         [SerializeField] private Vector3 _offsetFromOriginalPos = Vector3.zero;
         [SerializeField] private Ease _animationEase = Ease.OutCubic;
-        private Vector3 _startingPos;
         private Tween _tween;
+        private Vector2 _startingPos;
+
+        private void Awake()
+        {
+            _startingPos = _rectTransform.anchoredPosition;
+        }
+
         private void OnEnable()
         {
-            _tween?.Complete();
             _tween?.Kill();
-            _startingPos = _rectTransform.localPosition;
-            _rectTransform.localPosition = _startingPos + _offsetFromOriginalPos;
-            _tween = _rectTransform.DOLocalMove(_startingPos, _duration)
+
+            _rectTransform.anchoredPosition =
+                _startingPos + (Vector2)_offsetFromOriginalPos;
+
+            _tween = _rectTransform.DOAnchorPos(_startingPos, _duration)
                 .SetEase(_animationEase);
         }
     }
